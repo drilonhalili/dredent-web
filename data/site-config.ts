@@ -36,6 +36,17 @@ export const business = {
   bookingHref: "#contact",
 } as const;
 
+// Keyless Google Maps URLs derived from business.mapQuery — no API key to manage.
+// `view` and `directions` use the official Maps URLs API (they open the native
+// app on mobile; for directions Google asks the visitor for their start point,
+// so the site never touches their location). `embed` is the contact section's
+// iframe source — z=17 keeps the map zoomed in on the block around the clinic.
+export const mapLinks = {
+  view: `https://www.google.com/maps/search/?api=1&query=${business.mapQuery}`,
+  directions: `https://www.google.com/maps/dir/?api=1&destination=${business.mapQuery}`,
+  embed: `https://www.google.com/maps?q=${business.mapQuery}&z=17&output=embed`,
+} as const;
+
 export const nav = [
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },

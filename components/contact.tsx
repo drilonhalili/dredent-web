@@ -1,29 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, ExternalLink, Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { business } from "@/data/site-config";
+import { business, mapLinks } from "@/data/site-config";
 
 export function Contact() {
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  // NOTE: this is a client-side stand-in — static export has no backend to send to.
-  // Wire it to a real endpoint before launch: a Supabase table + edge function
-  // (a natural fit if the booking app already uses Supabase), a form service like
-  // Formspree/Getform, or a serverless function on whatever host you deploy to.
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-    }, 700);
-  }
-
   return (
     <section id="contact" className="py-20 sm:py-28">
       <Container className="grid gap-12 lg:grid-cols-[0.8fr_1fr] lg:gap-16">
@@ -36,7 +19,7 @@ export function Contact() {
           <SectionHeading
             eyebrow="Visit or write"
             title="Book a consultation"
-            subtitle="Tell us what's on your mind and we'll get back to you within one business day."
+            subtitle="Call or email us to book a visit — we'll get back to you within one business day."
           />
 
           <ul className="mt-8 space-y-5">
@@ -77,75 +60,38 @@ export function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="rounded-3xl border border-mist bg-porcelain-2 p-6 sm:p-8"
+          className="flex flex-col overflow-hidden rounded-3xl border border-mist bg-porcelain-2"
         >
-          {submitted ? (
-            <div role="status" className="flex h-full min-h-[280px] flex-col items-center justify-center text-center">
-              <p className="font-display text-2xl font-semibold text-ink">Request sent</p>
-              <p className="mt-2 max-w-xs text-ink-soft">
-                We&rsquo;ll reply at the email you gave us within one business day.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Full name" name="name" type="text" autoComplete="name" required />
-                <Field label="Email" name="email" type="email" autoComplete="email" required />
-              </div>
-              <Field label="Phone (optional)" name="phone" type="tel" autoComplete="tel" />
-              <div>
-                <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-ink">
-                  What&rsquo;s on your mind?
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  required
-                  className="w-full rounded-xl border border-mist bg-porcelain px-4 py-3 text-ink outline-none transition-colors focus:border-cusp"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full cursor-pointer rounded-full bg-cusp px-6 py-3.5 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitting ? "Sending…" : "Send request"}
-              </button>
-            </form>
-          )}
+          <iframe
+            src={mapLinks.embed}
+            title={`Map showing the location of ${business.name}`}
+            className="min-h-[360px] w-full flex-1 border-0 sm:min-h-[420px]"
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:px-6">
+            <a
+              href={mapLinks.directions}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-cusp px-6 py-3 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep"
+            >
+              <Navigation className="h-4 w-4" aria-hidden="true" />
+              Get directions
+            </a>
+            <a
+              href={mapLinks.view}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-cusp hover:text-cusp-deep"
+            >
+              Open in Google Maps
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+            </a>
+          </div>
         </motion.div>
       </Container>
     </section>
-  );
-}
-
-function Field({
-  label,
-  name,
-  type,
-  autoComplete,
-  required,
-}: {
-  label: string;
-  name: string;
-  type: string;
-  autoComplete?: string;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label htmlFor={name} className="mb-1.5 block text-sm font-medium text-ink">
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        autoComplete={autoComplete}
-        required={required}
-        className="w-full rounded-xl border border-mist bg-porcelain px-4 py-3 text-ink outline-none transition-colors focus:border-cusp"
-      />
-    </div>
   );
 }

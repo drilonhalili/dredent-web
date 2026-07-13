@@ -1,4 +1,4 @@
-import { business, faqs, seo } from "@/data/site-config";
+import { business, faqs, mapLinks, seo } from "@/data/site-config";
 
 /**
  * Structured data for local SEO. Two schema blocks:
@@ -38,6 +38,7 @@ export function JsonLd() {
         closes: "18:00",
       },
     ],
+    hasMap: mapLinks.view,
     sameAs: [business.social.instagram, business.social.facebook],
     priceRange: "$$",
   };

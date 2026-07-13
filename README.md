@@ -117,12 +117,19 @@ Business/Creator credentials I don't have. To wire it up:
 3. Replace `instagramPosts` in `data/site-config.ts` with the fetched data, or swap in a
    hosted widget (Curator, SnapWidget, Behold) if you'd rather not run the API glue.
 
-## The contact form
+## The contact section map
 
-`components/contact.tsx` is a client-side stand-in — a static export has no backend to
-POST to. Before launch, wire `handleSubmit` to something real: a Formspree/Getform
-endpoint is the fastest path, or since the Dredent app already uses Supabase, a Supabase
-table + Edge Function is a natural fit if you want everything in one place.
+`components/contact.tsx` pairs the clinic's contact details with an interactive Google
+Maps embed instead of a form (a static export has no backend to POST a form to anyway).
+The embed uses the keyless `output=embed` iframe — no API key to manage or restrict —
+zoomed to street level (`z=17`) on the clinic, with `loading="lazy"` so it doesn't
+block first paint. Below the map, "Get directions" and "Open in Google Maps" use the
+official Maps URLs API: they open the native app on mobile, and for directions Google
+asks the visitor for their start point, so the site never touches their location.
+All three URLs derive from `business.mapQuery` in `data/site-config.ts` — update that
+one value (and the `geo` coordinates) once you have the exact pin. Note the iframe
+loads Google's scripts/cookies on page view; if you later add a consent banner, gate
+the iframe behind it (a click-to-load facade is the usual pattern).
 
 ## A few deliberate follow-ups, not done here
 
