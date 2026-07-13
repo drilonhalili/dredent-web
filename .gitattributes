@@ -1,0 +1,11 @@
+# Normalize line endings: store LF in the repo, regardless of the OS you commit from.
+# Prevents CRLF churn between Windows and CI/Linux checkouts.
+* text=auto eol=lf
+
+# Binary assets — never touch line endings
+*.ttf binary
+*.png binary
+*.jpg binary
+*.webp binary
+*.ico binary
+*.zip binary

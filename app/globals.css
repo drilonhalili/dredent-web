@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+ * DESIGN TOKENS
+ * A deliberate departure from the "sky blue + Inter" dental-template default:
+ * porcelain/ink neutrals, a deep cusp-teal, and a single warm shade-guide gold.
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-porcelain: #f3f5f1;
+  --color-porcelain-2: #eaeee7;
+  --color-ink: #12211d;
+  --color-ink-soft: #4b5a54;
+  --color-cusp: #1f4a43;
+  --color-cusp-deep: #142f2a;
+  --color-shade: #c89448;
+  --color-shade-bright: #d6a85e;
+  --color-mist: #d8ded6;
+
+  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --animate-drift: drift 22s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(1.5deg); }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-mist);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-porcelain);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-shade);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cusp);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
