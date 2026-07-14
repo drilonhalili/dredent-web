@@ -66,16 +66,10 @@ export function Navbar() {
         <div className="hidden items-center gap-4 lg:flex">
           <a
             href={business.phoneHref}
-            className="flex items-center gap-2 text-sm font-medium text-ink-soft transition-colors hover:text-cusp"
+            className="flex cursor-pointer items-center gap-2 rounded-full bg-cusp px-5 py-2.5 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep"
           >
             <Phone className="h-4 w-4" aria-hidden="true" />
             {business.phone}
-          </a>
-          <a
-            href={business.bookingHref}
-            className="cursor-pointer rounded-full bg-cusp px-5 py-2.5 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep"
-          >
-            Book a visit
           </a>
         </div>
 
@@ -113,15 +107,9 @@ export function Navbar() {
                 </a>
               ))}
               <a
-                href={business.bookingHref}
-                onClick={() => setOpen(false)}
-                className="mt-2 rounded-full bg-cusp px-5 py-3 text-center text-sm font-semibold text-porcelain"
-              >
-                Book a visit
-              </a>
-              <a
                 href={business.phoneHref}
-                className="mt-1 flex items-center justify-center gap-2 py-2 text-sm text-ink-soft"
+                onClick={() => setOpen(false)}
+                className="mt-2 flex items-center justify-center gap-2 rounded-full bg-cusp px-5 py-3 text-center text-sm font-semibold text-porcelain"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
                 {business.phone}

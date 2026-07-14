@@ -107,27 +107,33 @@ that from other projects).
 
 ## Going live with Instagram
 
-The mosaic ships with static placeholder tiles because a real feed needs Instagram
-Business/Creator credentials I don't have. To wire it up:
+The mosaic is wired for **Curator.io** (Mosaic template —
+https://curator.io/templates/mosaic) but ships rendering static placeholder tiles
+until a feed id is configured. To go live:
 
-1. Create a Meta developer app + Instagram Business or Creator account.
-2. Fetch posts server-side with the **Instagram Graph API** and cache the result (a
-   build-time fetch or a small scheduled job both work fine — this site doesn't need
-   second-by-second freshness). Never expose a long-lived token client-side.
-3. Replace `instagramPosts` in `data/site-config.ts` with the fetched data, or swap in a
-   hosted widget (Curator, SnapWidget, Behold) if you'd rather not run the API glue.
+1. Create a Curator.io feed with the Mosaic template and connect the clinic's
+   Instagram account.
+2. Publish the feed and copy the feed id from the embed script URL
+   (`https://cdn.curator.io/published/<FEED_ID>.js`).
+3. Copy `.env.example` to `.env.local`, set `NEXT_PUBLIC_CURATOR_FEED_ID`, and
+   rebuild. While the id is empty, the placeholder mosaic from `instagramPosts`
+   in `data/site-config.ts` keeps rendering instead.
+
+Alternative if you outgrow the hosted widget: fetch posts server-side with the
+Instagram Graph API at build time (never expose a long-lived token client-side)
+and replace `instagramPosts` with the fetched data.
 
 ## The contact section map
 
 `components/contact.tsx` pairs the clinic's contact details with an interactive Google
 Maps embed instead of a form (a static export has no backend to POST a form to anyway).
-The embed uses the keyless `output=embed` iframe — no API key to manage or restrict —
-zoomed to street level (`z=17`) on the clinic, with `loading="lazy"` so it doesn't
-block first paint. Below the map, "Get directions" and "Open in Google Maps" use the
-official Maps URLs API: they open the native app on mobile, and for directions Google
-asks the visitor for their start point, so the site never touches their location.
-All three URLs derive from `business.mapQuery` in `data/site-config.ts` — update that
-one value (and the `geo` coordinates) once you have the exact pin. Note the iframe
+The embed uses Google's official "Embed a map" iframe (Share → Embed a map on the
+clinic's listing) — keyless, no API key to manage — pinned to the Dredent place
+listing at street-level zoom, with `loading="lazy"` so it doesn't block first paint.
+Below the map, "Open in Google Maps" uses the listing's official share link, and
+"Get directions" uses the Maps URLs API: both open the native app on mobile, and for
+directions Google asks the visitor for their start point, so the site never touches
+their location. All three URLs live in `mapLinks` in `data/site-config.ts`. Note the iframe
 loads Google's scripts/cookies on page view; if you later add a consent banner, gate
 the iframe behind it (a click-to-load facade is the usual pattern).
 
@@ -139,8 +145,12 @@ the iframe behind it (a click-to-load facade is the usual pattern).
 - **i18n**: given the clinic is in Tetovo, Albanian and Macedonian locale passes
   (Next's built-in `i18n` routing, or a library like `next-intl`) would help local
   search more than almost anything else on this list — likely `sq` first for Tetovo.
-- **Real photography**: cosmetic dentistry sites live or die on the before/after gallery —
-  the compare slider is only as convincing as the two photos in it.
+- **Real photography**: the Transformations section is wired for five real before/after
+  cases (`comparePairs` in `data/site-config.ts`). Run `bash scripts/fetch-results.sh`
+  once to download the photos into `public/results/` (the source links expire —
+  see the script header); until the files exist the sliders fall back to placeholders.
+  Before launch: confirm written patient consent for each photo and correct the
+  title/procedure lines, which were written from what the photos show.
 
 ## Stack
 

@@ -1,41 +1,66 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+} from "react";
 import { ChevronsLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type CompareSliderProps = {
   beforeSrc: string;
   afterSrc: string;
+  // Shown instead if the primary src fails to load (e.g. the real photo files
+  // haven't been downloaded into public/results/ yet — see scripts/fetch-results.sh).
+  beforeFallbackSrc?: string;
+  afterFallbackSrc?: string;
   beforeAlt: string;
   afterAlt: string;
-  beforeShade?: string;
-  afterShade?: string;
   initialPosition?: number;
   className?: string;
 };
 
+
 /**
  * Drag-to-reveal before/after comparison, in the spirit of Aceternity UI's
- * `Compare` component (https://ui.aceternity.com/components/compare) — rebuilt
- * from scratch here with a bespoke touch: the small badge reads out a real
- * VITA Classical shade code, ticking from the "before" shade to the "after"
- * shade as you drag, since that's the actual unit cosmetic dentistry measures
- * a whiter smile in.
+ * `Compare` component (https://ui.aceternity.com/components/compare) —
+ * rebuilt from scratch here. Draggable by pointer, and keyboard-operable
+ * via arrow keys / Home / End.
  */
 export function CompareSlider({
   beforeSrc,
   afterSrc,
+  beforeFallbackSrc,
+  afterFallbackSrc,
   beforeAlt,
   afterAlt,
-  beforeShade,
-  afterShade,
   initialPosition = 50,
   className,
 }: CompareSliderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const beforeImgRef = useRef<HTMLImageElement>(null);
+  const afterImgRef = useRef<HTMLImageElement>(null);
   const [position, setPosition] = useState(initialPosition);
   const [dragging, setDragging] = useState(false);
+  const [beforeUrl, setBeforeUrl] = useState(beforeSrc);
+  const [afterUrl, setAfterUrl] = useState(afterSrc);
+
+  // Swap to the fallback image if the primary fails. The onError props below
+  // cover failures after hydration; this effect covers errors that fired
+  // before React attached the handlers (a server-rendered <img> that 404s
+  // immediately loses its error event), detectable as complete-but-empty.
+  useEffect(() => {
+    const check = (img: HTMLImageElement | null, fallback: string | undefined, set: (s: string) => void) => {
+      if (img && fallback && img.complete && img.naturalWidth === 0) set(fallback);
+    };
+    check(beforeImgRef.current, beforeFallbackSrc, setBeforeUrl);
+    check(afterImgRef.current, afterFallbackSrc, setAfterUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const updateFromClientX = useCallback((clientX: number) => {
     const el = containerRef.current;
@@ -86,7 +111,6 @@ export function CompareSlider({
   const clipTransition = dragging
     ? "none"
     : "clip-path 0.5s cubic-bezier(0.22,1,0.36,1)";
-  const afterRevealed = position > 50;
 
   return (
     <div
@@ -111,9 +135,11 @@ export function CompareSlider({
       {/* Base layer: "after" image, full bleed */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={afterSrc}
+        ref={afterImgRef}
+        src={afterUrl}
         alt={afterAlt}
         draggable={false}
+        onError={() => afterFallbackSrc && setAfterUrl(afterFallbackSrc)}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
       />
 
@@ -124,9 +150,11 @@ export function CompareSlider({
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={beforeSrc}
+          ref={beforeImgRef}
+          src={beforeUrl}
           alt={beforeAlt}
           draggable={false}
+          onError={() => beforeFallbackSrc && setBeforeUrl(beforeFallbackSrc)}
           className="h-full w-full object-cover"
         />
       </div>
@@ -148,17 +176,6 @@ export function CompareSlider({
         </div>
       </div>
 
-      {beforeShade && afterShade && (
-        <div className="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-ink/80 px-3.5 py-1.5 font-mono text-xs backdrop-blur-sm">
-          <span className={afterRevealed ? "text-porcelain/45" : "font-semibold text-shade"}>
-            {beforeShade}
-          </span>
-          <span className="text-porcelain/45">→</span>
-          <span className={afterRevealed ? "font-semibold text-shade" : "text-porcelain/45"}>
-            {afterShade}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

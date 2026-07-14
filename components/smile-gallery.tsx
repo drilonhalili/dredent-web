@@ -15,7 +15,7 @@ export function SmileGallery() {
           <SectionHeading
             eyebrow="Real results"
             title="Drag to see the reveal"
-            subtitle="Two real treatment plans, shown as our patients experienced them: a shade reading before, and the shade we landed on."
+            subtitle="Real treatment plans from our clinic, shown as our patients experienced them — drag to compare the before with the result."
             tone="light"
           />
         </div>
@@ -30,12 +30,12 @@ export function SmileGallery() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
             >
               <CompareSlider
-                beforeSrc={placeholderImage(pair.beforeSeed, 900, 675)}
-                afterSrc={placeholderImage(pair.afterSeed, 900, 675)}
+                beforeSrc={pair.beforeSrc ?? placeholderImage(pair.beforeSeed, 900, 675)}
+                afterSrc={pair.afterSrc ?? placeholderImage(pair.afterSeed, 900, 675)}
+                beforeFallbackSrc={pair.beforeSrc ? placeholderImage(pair.beforeSeed, 900, 675) : undefined}
+                afterFallbackSrc={pair.afterSrc ? placeholderImage(pair.afterSeed, 900, 675) : undefined}
                 beforeAlt={`Before: ${pair.title}`}
                 afterAlt={`After: ${pair.title}`}
-                beforeShade={pair.beforeShade}
-                afterShade={pair.afterShade}
               />
               <div className="mt-4 flex items-baseline justify-between gap-4">
                 <h3 className="font-display text-lg font-semibold text-porcelain">{pair.title}</h3>

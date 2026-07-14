@@ -28,14 +28,20 @@ export function JsonLd() {
       latitude: business.geo.lat,
       longitude: business.geo.lng,
     },
-    // Keep in sync with business.hours in data/site-config.ts. Google confirms only
-    // "Closes 6 PM" — the 08:00 opening time is assumed, verify before launch.
+    // Keep in sync with business.hours in data/site-config.ts. Sunday is closed,
+    // which schema.org expresses by omission.
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
         dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "08:00",
+        opens: "10:00",
         closes: "18:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "10:00",
+        closes: "15:00",
       },
     ],
     hasMap: mapLinks.view,

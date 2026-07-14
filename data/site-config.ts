@@ -6,27 +6,24 @@
 
 export const business = {
   name: "Dredent Dental Clinic",
-  shortName: "Dredent",
   tagline: "Excellent care, personal attention.",
   descriptionShort:
     "A family dental clinic in Tetovo, North Macedonia — general and cosmetic dentistry built on compassionate care and long-lasting, trusting relationships.",
   phone: "+389 70 376 959",
   phoneHref: "tel:+38970376959",
-  // TODO: replace with the clinic's real email before launch.
-  email: "info@dredent.example",
+  email: "dredentclinic@gmail.com",
   address: {
     line1: "Strasho Pindjur Rd 121",
     line2: "1200 Tetovo, North Macedonia",
   },
   mapQuery: "Dredent+Dental+Clinic+Strasho+Pindjur+121+Tetovo",
-  // APPROXIMATE Tetovo city-center coordinates. For best local-SEO results, replace
-  // with the exact pin: right-click the clinic pin in Google Maps → copy coordinates.
-  geo: { lat: 42.0106, lng: 20.9714 },
-  // Google confirms only "Closes 6 PM". Opening time and weekend hours below are
-  // ASSUMED — verify against the real schedule (and keep components/json-ld.tsx in sync).
+  // Exact pin coordinates, copied from the clinic's Google Maps listing.
+  geo: { lat: 42.013353, lng: 20.971293 },
+  // Confirmed schedule — keep components/json-ld.tsx openingHoursSpecification in sync.
   hours: [
-    { days: "Mon – Fri", time: "08:00 – 18:00" },
-    { days: "Sat – Sun", time: "Closed" },
+    { days: "Mon – Fri", time: "10:00 – 18:00" },
+    { days: "Sat", time: "10:00 – 15:00" },
+    { days: "Sun", time: "Closed" },
   ],
   social: {
     instagram: "https://www.instagram.com/dredentclinicandlab/",
@@ -36,15 +33,26 @@ export const business = {
   bookingHref: "#contact",
 } as const;
 
-// Keyless Google Maps URLs derived from business.mapQuery — no API key to manage.
-// `view` and `directions` use the official Maps URLs API (they open the native
-// app on mobile; for directions Google asks the visitor for their start point,
-// so the site never touches their location). `embed` is the contact section's
-// iframe source — z=17 keeps the map zoomed in on the block around the clinic.
+// Keyless Google Maps URLs — no API key to manage.
+// `view` is the clinic's official share link (Google Maps → Share → "Send a
+// link"); `directions` uses the Maps URLs API, so Google asks the visitor for
+// their start point and the site never touches their location. `embed` is the
+// official iframe source from Share → "Embed a map", pinned to the clinic's
+// place listing at street-level zoom.
 export const mapLinks = {
-  view: `https://www.google.com/maps/search/?api=1&query=${business.mapQuery}`,
+  view: "https://maps.app.goo.gl/eHsW9Q9bY4BZab189",
   directions: `https://www.google.com/maps/dir/?api=1&destination=${business.mapQuery}`,
-  embed: `https://www.google.com/maps?q=${business.mapQuery}&z=17&output=embed`,
+  embed:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1482.197567686761!2d20.96981249223825!3d42.01325510689699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353f172135ef623%3A0x408c2cf4805105f4!2sDredent%20Dental%20Clinic!5e0!3m2!1sen!2sus!4v1783958068102!5m2!1sen!2sus",
+} as const;
+
+// Curator.io feed for the Instagram section (mosaic template:
+// https://curator.io/templates/mosaic). While feedId is empty the section keeps
+// rendering its built-in placeholder mosaic; set the real values in .env.local
+// (see .env.example) once the feed is created and published in Curator.
+export const curatorFeed = {
+  feedId: process.env.NEXT_PUBLIC_CURATOR_FEED_ID ?? "",
+  containerId: process.env.NEXT_PUBLIC_CURATOR_CONTAINER_ID ?? "curator-feed-default-feed-layout",
 } as const;
 
 export const nav = [
@@ -108,39 +116,71 @@ export const services: Service[] = [
 ];
 
 // Before / after pairs for the signature "Smile Reveal" compare slider.
-// Shade codes follow the VITA Classical scale (lighter letter/number = brighter).
-export type ComparePair = {
+// beforeSrc/afterSrc point at real photos under public/results/ — run
+// scripts/fetch-results.sh once to download them (see README). Until the files
+// exist, the slider falls back to the placeholder seeds automatically.
+type ComparePair = {
   id: string;
   title: string;
+  beforeSrc?: string;
+  afterSrc?: string;
   beforeSeed: string;
   afterSeed: string;
-  beforeShade: string;
-  afterShade: string;
   procedure: string;
 };
 
+// ⚠️ REAL PATIENT PHOTOS. Before launch: (1) confirm each patient's written
+// consent to publish, (2) correct the titles/procedure lines below — they are
+// written from what the photos show, not from the clinic's records.
 export const comparePairs: ComparePair[] = [
   {
     id: "case-01",
-    title: "Porcelain veneers, 6 units",
+    title: "Full-arch ceramic makeover",
+    beforeSrc: "/results/case-01-before.jpg",
+    afterSrc: "/results/case-01-after.jpg",
     beforeSeed: "cusp-case-01-before",
     afterSeed: "cusp-case-01-after",
-    beforeShade: "C2",
-    afterShade: "A1",
-    procedure: "Digital smile design → 6 porcelain veneers",
+    procedure: "Full-mouth ceramic restorations",
   },
   {
     id: "case-02",
-    title: "Whitening + composite edge repair",
+    title: "Closing gaps, natural shade",
+    beforeSrc: "/results/case-02-before.jpg",
+    afterSrc: "/results/case-02-after.jpg",
     beforeSeed: "cusp-case-02-before",
     afterSeed: "cusp-case-02-after",
-    beforeShade: "A3.5",
-    afterShade: "B1",
-    procedure: "In-studio whitening → composite bonding",
+    procedure: "Ceramic veneers",
+  },
+  {
+    id: "case-03",
+    title: "A smile rebuilt",
+    beforeSrc: "/results/case-03-before.jpg",
+    afterSrc: "/results/case-03-after.jpg",
+    beforeSeed: "cusp-case-03-before",
+    afterSeed: "cusp-case-03-after",
+    procedure: "Ceramic crowns & veneers",
+  },
+  {
+    id: "case-04",
+    title: "Refreshed and brightened",
+    beforeSrc: "/results/case-04-before.jpg",
+    afterSrc: "/results/case-04-after.jpg",
+    beforeSeed: "cusp-case-04-before",
+    afterSeed: "cusp-case-04-after",
+    procedure: "Ceramic veneers",
+  },
+  {
+    id: "case-05",
+    title: "Upper-arch transformation",
+    beforeSrc: "/results/case-05-before.jpg",
+    afterSrc: "/results/case-05-after.jpg",
+    beforeSeed: "cusp-case-05-before",
+    afterSeed: "cusp-case-05-after",
+    procedure: "Ceramic veneers, upper arch",
   },
 ];
 
-export type Testimonial = {
+type Testimonial = {
   quote: string;
   name: string;
   context: string;
@@ -171,7 +211,7 @@ export const testimonials: Testimonial[] = [
   },
 ];
 
-export type FaqItem = { question: string; answer: string };
+type FaqItem = { question: string; answer: string };
 
 export const faqs: FaqItem[] = [
   {
@@ -201,7 +241,7 @@ export const faqs: FaqItem[] = [
   },
 ];
 
-export type InstagramPost = {
+type InstagramPost = {
   id: string;
   seed: string;
   caption: string;
@@ -237,6 +277,9 @@ export const seo = {
     "cosmetic dentistry Tetovo",
     "teeth whitening Tetovo",
     "dental implants Tetovo",
+    "dental check-up Tetovo",
+    "tooth extraction Tetovo",
+    "pediatric dentist Tetovo",
     "dentist North Macedonia",
   ],
 } as const;

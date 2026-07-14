@@ -68,7 +68,7 @@ export function Contact() {
             className="min-h-[360px] w-full flex-1 border-0 sm:min-h-[420px]"
             loading="lazy"
             allowFullScreen
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
           />
           <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:px-6">
             <a

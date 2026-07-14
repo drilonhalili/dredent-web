@@ -1,26 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Heart } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button-link";
-import { business, instagramPosts } from "@/data/site-config";
+import { business, curatorFeed, instagramPosts } from "@/data/site-config";
 import { placeholderImage } from "@/lib/utils";
 
 /**
- * A curator.io-style "mosaic" wall (https://curator.io/templates/mosaic): a grid of
- * varying tile sizes rather than a uniform grid, so it reads as a wall of moments
- * instead of a spreadsheet.
+ * Instagram wall in the Curator.io "mosaic" style (https://curator.io/templates/mosaic).
  *
- * This ships with placeholder tiles from `data/site-config.ts`. To go live:
- *   1. Create a Meta developer app + Instagram Business/Creator account.
- *   2. Fetch posts server-side with the Instagram Graph API (never expose the
- *      long-lived token client-side) and cache the response — a small build-time
- *      fetch or a scheduled job both work fine for a site that doesn't need
- *      second-by-second freshness.
- *   3. Swap `instagramPosts` below for the fetched data, or drop in a hosted
- *      widget (Curator, SnapWidget, Behold) if you'd rather not run the API glue.
+ * Two modes, switched by `curatorFeed.feedId` (data/site-config.ts + .env.example):
+ *   - feedId set: renders the live Curator.io feed. Create the feed with the Mosaic
+ *     template in Curator, publish it, and put its id in NEXT_PUBLIC_CURATOR_FEED_ID.
+ *   - feedId empty (default): the built-in placeholder mosaic below, tiles from
+ *     `instagramPosts` in data/site-config.ts.
  */
 export function InstagramMosaic() {
   return (
@@ -38,6 +34,9 @@ export function InstagramMosaic() {
           </ButtonLink>
         </div>
 
+        {curatorFeed.feedId ? (
+          <CuratorMosaic />
+        ) : (
         <div className="mt-10 grid auto-rows-[130px] grid-cols-2 gap-3 sm:auto-rows-[170px] sm:grid-cols-4 sm:gap-4">
           {instagramPosts.map((post, i) => (
             <motion.a
@@ -70,7 +69,36 @@ export function InstagramMosaic() {
             </motion.a>
           ))}
         </div>
+        )}
       </Container>
     </section>
+  );
+}
+
+// Live Curator.io embed. The loader script populates the container div; the
+// "Powered by Curator.io" link is required on Curator's free plan.
+function CuratorMosaic() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.async = true;
+    script.charset = "UTF-8";
+    script.src = `https://cdn.curator.io/published/${curatorFeed.feedId}.js`;
+    document.body.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+
+  return (
+    <div id={curatorFeed.containerId} className="mt-10">
+      <a
+        href="https://curator.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="crt-logo crt-tag"
+      >
+        Powered by Curator.io
+      </a>
+    </div>
   );
 }
