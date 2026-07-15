@@ -90,7 +90,10 @@ export function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-mist/20 pt-6 font-mono text-xs text-mist/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+          {/* suppressHydrationWarning: the year is baked in at build time; when a
+              visitor's clock has rolled into a new year the client corrects it
+              without tripping a hydration error. */}
+          <p suppressHydrationWarning>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
           {/* TODO: point at the Coonwerks site once it has a URL. */}
           <a href="" className="transition-colors hover:text-shade">
             Developed by Coonwerks

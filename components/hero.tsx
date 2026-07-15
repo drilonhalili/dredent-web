@@ -75,8 +75,12 @@ export function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative h-[320px] sm:h-[420px] lg:h-[480px]"
+          aria-hidden="true"
         >
           <HeroScene />
+          <p className="pointer-events-none absolute bottom-1 right-2 font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft/50">
+            Tap to re-run the scan
+          </p>
         </motion.div>
       </Container>
     </section>
