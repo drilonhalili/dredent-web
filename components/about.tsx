@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
-import { placeholderImage } from "@/lib/utils";
 
 const tags = ["Tetovo, North Macedonia", "General & cosmetic", "Clinic & lab"];
 
@@ -18,15 +17,20 @@ export function About() {
           className="relative"
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-porcelain-2">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={placeholderImage("cusp-about-studio", 800, 1000)}
-              alt="Treatment room at Dredent Dental Clinic in Tetovo"
-              width={800}
-              height={1000}
-              loading="lazy"
-              className="h-full w-full object-cover"
-            />
+            {/* Pre-cropped to the container's 4:5 and encoded from
+                assets-src/teeths-original.jpeg (WebP + JPEG fallback), so no
+                wasted bytes — the WebP is ~52 KB vs the 2.4 MB original. */}
+            <picture>
+              <source srcSet="/about/studio.webp" type="image/webp" />
+              <img
+                src="/about/studio.jpg"
+                alt="Gold-toned cast of upper and lower rows of teeth, facing each other"
+                width={960}
+                height={1200}
+                loading="lazy"
+                className="h-full w-full object-cover"
+              />
+            </picture>
           </div>
         </motion.div>
 
