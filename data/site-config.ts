@@ -178,6 +178,33 @@ export const comparePairs: ComparePair[] = [
     afterSeed: "cusp-case-05-after",
     procedure: "Ceramic veneers, upper arch",
   },
+  {
+    id: "case-06",
+    title: "A complete new start",
+    beforeSrc: "/results/case-06-before.webp",
+    afterSrc: "/results/case-06-after.webp",
+    beforeSeed: "cusp-case-06-before",
+    afterSeed: "cusp-case-06-after",
+    procedure: "Full-mouth ceramic restorations",
+  },
+  {
+    id: "case-07",
+    title: "Worn teeth, restored",
+    beforeSrc: "/results/case-07-before.webp",
+    afterSrc: "/results/case-07-after.webp",
+    beforeSeed: "cusp-case-07-before",
+    afterSeed: "cusp-case-07-after",
+    procedure: "Ceramic crowns, both arches",
+  },
+  {
+    id: "case-08",
+    title: "Gaps closed, line straightened",
+    beforeSrc: "/results/case-08-before.webp",
+    afterSrc: "/results/case-08-after.webp",
+    beforeSeed: "cusp-case-08-before",
+    afterSeed: "cusp-case-08-after",
+    procedure: "Ceramic veneers & crowns",
+  },
 ];
 
 type Testimonial = {
