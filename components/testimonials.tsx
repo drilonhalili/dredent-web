@@ -4,18 +4,22 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { testimonials } from "@/data/site-config";
+import { useI18n } from "@/components/i18n-provider";
 
+// ⚠️ The quotes are SAMPLE CONTENT — see the note above `testimonials` in
+// data/locales/en.ts before launch.
 export function Testimonials() {
+  const { t } = useI18n();
+
   return (
     <section id="stories" className="bg-porcelain-2 py-20 sm:py-28">
       <Container>
-        <SectionHeading eyebrow="Patient stories" title="Told in their own words" />
+        <SectionHeading eyebrow={t.testimonials.eyebrow} title={t.testimonials.title} />
 
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {testimonials.map((t, i) => (
+          {t.testimonials.items.map((item, i) => (
             <motion.figure
-              key={t.name}
+              key={item.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -28,10 +32,10 @@ export function Testimonials() {
                 ))}
               </div>
               <blockquote className="mt-4 flex-1 text-balance leading-relaxed text-ink">
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;{item.quote}&rdquo;
               </blockquote>
               <figcaption className="mt-5 font-mono text-xs uppercase tracking-wide text-ink-soft">
-                {t.name} · {t.context}
+                {item.name} · {item.context}
               </figcaption>
             </motion.figure>
           ))}

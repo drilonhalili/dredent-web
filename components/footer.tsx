@@ -1,8 +1,11 @@
 import { Link2, MapPin, Phone } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import type { Dictionary } from "@/data/locales";
 import { business, nav, services } from "@/data/site-config";
+import { fill } from "@/lib/i18n";
 
-export function Footer() {
+// Server component: receives the dictionary from the page rather than the client context.
+export function Footer({ t }: { t: Dictionary }) {
   return (
     <footer className="bg-cusp-deep pb-8 pt-16 text-mist">
       <Container>
@@ -19,9 +22,7 @@ export function Footer() {
               </svg>
               {business.name}
             </a>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist/80">
-              {business.descriptionShort}
-            </p>
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-mist/80">{t.descriptionShort}</p>
             <div className="mt-5 flex gap-3">
               <a
                 href={business.social.instagram}
@@ -45,12 +46,12 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">Explore</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">{t.footer.explore}</p>
             <ul className="mt-4 space-y-2.5">
               {nav.map((item) => (
                 <li key={item.href}>
                   <a href={item.href} className="text-sm text-mist/90 transition-colors hover:text-shade">
-                    {item.label}
+                    {t.nav[item.id]}
                   </a>
                 </li>
               ))}
@@ -58,25 +59,25 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">Services</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">{t.footer.services}</p>
             <ul className="mt-4 space-y-2.5">
               {services.slice(0, 5).map((s) => (
-                <li key={s.title} className="text-sm text-mist/90">
-                  {s.title}
+                <li key={s.id} className="text-sm text-mist/90">
+                  {t.services.items[s.id].title}
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">Visit</p>
+            <p className="font-mono text-xs uppercase tracking-widest text-mist/60">{t.footer.visit}</p>
             <ul className="mt-4 space-y-3 text-sm text-mist/90">
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-shade" aria-hidden="true" />
                 <span>
-                  {business.address.line1}
+                  {t.address.line1}
                   <br />
-                  {business.address.line2}
+                  {t.address.line2}
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
@@ -93,10 +94,12 @@ export function Footer() {
           {/* suppressHydrationWarning: the year is baked in at build time; when a
               visitor's clock has rolled into a new year the client corrects it
               without tripping a hydration error. */}
-          <p suppressHydrationWarning>© {new Date().getFullYear()} {business.name}. All rights reserved.</p>
+          <p suppressHydrationWarning>
+            {fill(t.footer.rights, { year: new Date().getFullYear(), name: business.name })}
+          </p>
           {/* TODO: point at the Coonwerks site once it has a URL. */}
           <a href="" className="transition-colors hover:text-shade">
-            Developed by Coonwerks
+            {t.footer.developedBy}
           </a>
         </div>
       </Container>

@@ -8,8 +8,13 @@ import { Testimonials } from "@/components/testimonials";
 import { Faq } from "@/components/faq";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
+import { getDictionary } from "@/data/locales";
+import { defaultLocale, isLocale } from "@/lib/i18n";
 
-export default function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: raw } = await params;
+  const t = getDictionary(isLocale(raw) ? raw : defaultLocale);
+
   return (
     <>
       <Navbar />
@@ -23,7 +28,7 @@ export default function Home() {
         <Faq />
         <Contact />
       </main>
-      <Footer />
+      <Footer t={t} />
     </>
   );
 }

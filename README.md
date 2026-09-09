@@ -137,20 +137,55 @@ their location. All three URLs live in `mapLinks` in `data/site-config.ts`. Note
 loads Google's scripts/cookies on page view; if you later add a consent banner, gate
 the iframe behind it (a click-to-load facade is the usual pattern).
 
+## Languages
+
+The site is trilingual — Albanian (`sq`, the default), English (`en`) and Macedonian
+(`mk`) — and every language is a fully static page at `/<locale>/`. The bare `/` is a
+tiny page that redirects to the default locale with a `<meta http-equiv="refresh">`,
+because a static export has no server to send a 301; if your host has redirect rules
+(Netlify `_redirects`, `vercel.json`, nginx), add a real 301 for `/` → `/sq/` there too.
+
+- `lib/i18n.ts` — the list of locales and **`defaultLocale`**. Change that one constant to
+  make another language the default; no URL changes, since every locale is always
+  served under its own prefix.
+- `data/locales/{sq,en,mk}.ts` — one dictionary per language, all typed against
+  `data/locales/types.ts`, so a missing string is a build error rather than English
+  leaking through. Business facts that don't change with language (phone, links, image
+  paths, and the ids the dictionaries key on) stay in `data/site-config.ts`.
+- `app/[locale]/layout.tsx` — sets `<html lang>`, the per-language title, description and
+  keywords, `hreflang` alternates (`x-default` → the default locale), `og:locale`, and the
+  JSON-LD in that language. `app/[locale]/opengraph-image.tsx` renders a per-language share
+  card and `app/sitemap.ts` lists all three URLs with their alternates.
+- Client components read copy with `useI18n()` from `components/i18n-provider.tsx`; server
+  components take the dictionary as a prop (`Footer`) or call `getDictionary(locale)`.
+- `components/language-switcher.tsx` is the dropdown in the navbar (a globe + current
+  language; expands in place inside the mobile menu). It keeps the visitor on the section
+  they were reading (`#faq` etc.) when they switch language.
+
+To add a language: append its code to `locales` in `lib/i18n.ts` and add its name and
+`og:locale` to the two maps there, create `data/locales/<code>.ts` (copy `en.ts`), and
+register it in `data/locales/index.ts`. The build fails until every string is present.
+
+Fonts: Fraunces and Work Sans are Latin-only, so Cyrillic on the `/mk/` pages falls back to
+a system serif/sans through the `unicode-range` faces at the top of `app/globals.css`
+(zero extra bytes; Latin text never touches them). Self-hosting a Cyrillic-capable pair and
+pointing those two `@font-face` rules at it is the polish step if you want the brand look in
+Macedonian too. The Macedonian Open Graph card already uses IBM Plex Mono, the one
+self-hosted face that has Cyrillic.
+
 ## A few deliberate follow-ups, not done here
 
 - **Font subsetting**: the three self-hosted fonts are full variable/static files
   (~1.9 MB total). `pyftsubset` or `glyphhanger` can trim this substantially once you know
-  the final character set (Latin + Cyrillic, if you add Macedonian/Albanian copy).
-- **i18n**: given the clinic is in Tetovo, Albanian and Macedonian locale passes
-  (Next's built-in `i18n` routing, or a library like `next-intl`) would help local
-  search more than almost anything else on this list — likely `sq` first for Tetovo.
+  the final character set — Latin for `sq`/`en`; the `mk` pages need a Cyrillic-capable
+  family, see "Languages" above.
 - **Real photography**: the Transformations section is wired for five real before/after
   cases (`comparePairs` in `data/site-config.ts`). Run `bash scripts/fetch-results.sh`
   once to download the photos into `public/results/` (the source links expire —
   see the script header); until the files exist the sliders fall back to placeholders.
   Before launch: confirm written patient consent for each photo and correct the
-  title/procedure lines, which were written from what the photos show.
+  title/procedure lines (`gallery.cases` in each dictionary), which were written from
+  what the photos show.
 
 ## Stack
 

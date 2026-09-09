@@ -1,24 +1,29 @@
-import { business, faqs, mapLinks, seo } from "@/data/site-config";
+import { getDictionary } from "@/data/locales";
+import { business, mapLinks, seo } from "@/data/site-config";
+import { localePath, type Locale } from "@/lib/i18n";
 
 /**
- * Structured data for local SEO. Two schema blocks:
+ * Structured data for local SEO, rendered once per locale page in the language
+ * of that page. Two schema blocks:
  *  - Dentist (a LocalBusiness subtype) with NAP, geo, hours — powers the Knowledge
  *    Panel / map pack eligibility in Google.
  *  - FAQPage — makes the FAQ section eligible for FAQ rich results.
  * Rendered as a plain <script> tag so it's static-export friendly (no client JS needed).
  */
-export function JsonLd() {
+export function JsonLd({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale);
+
   const dentistSchema = {
     "@context": "https://schema.org",
     "@type": "Dentist",
     name: business.name,
-    description: seo.description,
-    url: seo.siteUrl,
+    description: t.seo.description,
+    url: `${seo.siteUrl}${localePath(locale)}`,
     telephone: business.phone,
     email: business.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: business.address.line1,
+      streetAddress: t.address.line1,
       addressLocality: "Tetovo",
       postalCode: "1200",
       addressCountry: "MK",
@@ -52,7 +57,8 @@ export function JsonLd() {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((item) => ({
+    inLanguage: locale,
+    mainEntity: t.faq.items.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: {

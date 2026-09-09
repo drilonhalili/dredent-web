@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import { Anchor, Gem, Layers, Scan, Sparkles, Stethoscope, type LucideIcon } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { services, type Service } from "@/data/site-config";
+import { useI18n } from "@/components/i18n-provider";
+import { services, type ServiceIcon } from "@/data/site-config";
 
-const icons: Record<Service["icon"], LucideIcon> = {
+const icons: Record<ServiceIcon, LucideIcon> = {
   scan: Scan,
   gem: Gem,
   sparkles: Sparkles,
@@ -16,21 +17,24 @@ const icons: Record<Service["icon"], LucideIcon> = {
 };
 
 export function Services() {
+  const { t } = useI18n();
+
   return (
     <section id="services" className="bg-porcelain-2 py-20 sm:py-28">
       <Container>
         <SectionHeading
-          eyebrow="What we treat"
-          title="Six ways into a better bite"
-          subtitle="Pick whichever applies — there's no order to work through, just the thing that's actually bothering you."
+          eyebrow={t.services.eyebrow}
+          title={t.services.title}
+          subtitle={t.services.subtitle}
         />
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service, i) => {
             const Icon = icons[service.icon];
+            const copy = t.services.items[service.id];
             return (
               <motion.div
-                key={service.title}
+                key={service.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
@@ -40,12 +44,8 @@ export function Services() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cusp/10 text-cusp transition-colors duration-200 group-hover:bg-cusp group-hover:text-porcelain">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <h3 className="mt-5 font-display text-xl font-semibold text-ink">
-                  {service.title}
-                </h3>
-                <p className="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">
-                  {service.description}
-                </p>
+                <h3 className="mt-5 font-display text-xl font-semibold text-ink">{copy.title}</h3>
+                <p className="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">{copy.description}</p>
               </motion.div>
             );
           })}

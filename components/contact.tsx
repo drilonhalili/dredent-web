@@ -4,9 +4,13 @@ import { motion } from "framer-motion";
 import { Clock, ExternalLink, Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { useI18n } from "@/components/i18n-provider";
 import { business, mapLinks } from "@/data/site-config";
+import { fill } from "@/lib/i18n";
 
 export function Contact() {
+  const { t } = useI18n();
+
   return (
     <section id="contact" className="py-20 sm:py-28">
       <Container className="grid gap-12 lg:grid-cols-[0.8fr_1fr] lg:gap-16">
@@ -17,17 +21,17 @@ export function Contact() {
           transition={{ duration: 0.6 }}
         >
           <SectionHeading
-            eyebrow="Visit or write"
-            title="Book a consultation"
-            subtitle="Call or email us to book a visit — we'll get back to you within one business day."
+            eyebrow={t.contact.eyebrow}
+            title={t.contact.title}
+            subtitle={t.contact.subtitle}
           />
 
           <ul className="mt-8 space-y-5">
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-cusp" aria-hidden="true" />
               <div>
-                <p className="text-ink">{business.address.line1}</p>
-                <p className="text-ink-soft">{business.address.line2}</p>
+                <p className="text-ink">{t.address.line1}</p>
+                <p className="text-ink-soft">{t.address.line2}</p>
               </div>
             </li>
             <li className="flex items-center gap-3">
@@ -46,8 +50,8 @@ export function Contact() {
               <Clock className="mt-0.5 h-5 w-5 shrink-0 text-cusp" aria-hidden="true" />
               <div className="space-y-0.5">
                 {business.hours.map((h) => (
-                  <p key={h.days} className="text-ink-soft">
-                    <span className="text-ink">{h.days}</span> — {h.time}
+                  <p key={h.id} className="text-ink-soft">
+                    <span className="text-ink">{t.hours[h.id]}</span> — {h.time ?? t.hours.closed}
                   </p>
                 ))}
               </div>
@@ -64,7 +68,7 @@ export function Contact() {
         >
           <iframe
             src={mapLinks.embed}
-            title={`Map showing the location of ${business.name}`}
+            title={fill(t.a11y.mapTitle, { name: business.name })}
             className="min-h-[360px] w-full flex-1 border-0 sm:min-h-[420px]"
             loading="lazy"
             allowFullScreen
@@ -78,7 +82,7 @@ export function Contact() {
               className="inline-flex items-center gap-2 rounded-full bg-cusp px-6 py-3 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep"
             >
               <Navigation className="h-4 w-4" aria-hidden="true" />
-              Get directions
+              {t.contact.directions}
             </a>
             <a
               href={mapLinks.view}
@@ -86,7 +90,7 @@ export function Contact() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-cusp hover:text-cusp-deep"
             >
-              Open in Google Maps
+              {t.contact.openInMaps}
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           </div>

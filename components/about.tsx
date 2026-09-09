@@ -2,10 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
-
-const tags = ["Tetovo, North Macedonia", "General & cosmetic", "Clinic & lab"];
+import { useI18n } from "@/components/i18n-provider";
 
 export function About() {
+  const { t } = useI18n();
+
   return (
     <section id="about" className="py-20 sm:py-28">
       <Container className="grid items-center gap-12 lg:grid-cols-[0.85fr_1fr] lg:gap-16">
@@ -24,7 +25,7 @@ export function About() {
               <source srcSet="/about/studio.webp" type="image/webp" />
               <img
                 src="/about/studio.jpg"
-                alt="Gold-toned cast of upper and lower rows of teeth, facing each other"
+                alt={t.about.imageAlt}
                 width={960}
                 height={1200}
                 loading="lazy"
@@ -41,29 +42,24 @@ export function About() {
           transition={{ duration: 0.7, delay: 0.1 }}
         >
           <p className="font-mono text-[0.7rem] font-medium uppercase tracking-[0.28em] text-cusp">
-            About the studio
+            {t.about.eyebrow}
           </p>
           <h2 className="mt-3 text-balance font-display text-3xl font-semibold leading-[1.1] text-ink sm:text-4xl">
-            Dentistry that shows its work
+            {t.about.title}
           </h2>
-          <p className="mt-5 max-w-lg text-balance leading-relaxed text-ink-soft">
-            Every plan starts on a screen, not a hunch. We scan, model, and preview before we
-            commit to anything permanent, so the version of your smile you approve on-screen is
-            the one you actually get in the chair.
-          </p>
+          <p className="mt-5 max-w-lg text-balance leading-relaxed text-ink-soft">{t.about.body}</p>
 
           <blockquote className="mt-8 border-l-2 border-shade py-1 pl-6">
             <p className="text-balance font-display text-xl italic leading-snug text-ink sm:text-2xl">
-              &ldquo;We strive to ensure that our patients receive excellent care and personal
-              attention, served with compassion and kindness.&rdquo;
+              &ldquo;{t.about.quote}&rdquo;
             </p>
             <footer className="mt-3 font-mono text-xs uppercase tracking-wider text-ink-soft">
-              — our promise to every patient
+              {t.about.quoteAttribution}
             </footer>
           </blockquote>
 
           <div className="mt-8 flex flex-wrap gap-2">
-            {tags.map((tag) => (
+            {t.about.tags.map((tag) => (
               <span
                 key={tag}
                 className="rounded-full border border-mist px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-wide text-ink-soft"

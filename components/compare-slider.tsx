@@ -9,13 +9,15 @@ import {
   type PointerEvent,
 } from "react";
 import { ChevronsLeftRight } from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
+import { fill } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type CompareSliderProps = {
   beforeSrc: string;
   afterSrc: string;
   // Shown instead if the primary src fails to load (e.g. the real photo files
-  // haven't been downloaded into public/results/ yet — see scripts/fetch-results.sh).
+  // are missing from public/results/ — see scripts/align-results.mjs).
   beforeFallbackSrc?: string;
   afterFallbackSrc?: string;
   beforeAlt: string;
@@ -23,7 +25,6 @@ type CompareSliderProps = {
   initialPosition?: number;
   className?: string;
 };
-
 
 /**
  * Drag-to-reveal before/after comparison, in the spirit of Aceternity UI's
@@ -41,6 +42,7 @@ export function CompareSlider({
   initialPosition = 50,
   className,
 }: CompareSliderProps) {
+  const { t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const beforeImgRef = useRef<HTMLImageElement>(null);
   const afterImgRef = useRef<HTMLImageElement>(null);
@@ -122,7 +124,7 @@ export function CompareSlider({
       onKeyDown={onKeyDown}
       role="slider"
       tabIndex={0}
-      aria-label={`Drag to compare: ${beforeAlt} versus ${afterAlt}`}
+      aria-label={fill(t.a11y.dragToCompare, { before: beforeAlt, after: afterAlt })}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(position)}
@@ -160,10 +162,10 @@ export function CompareSlider({
       </div>
 
       <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-ink/70 px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-wider text-porcelain backdrop-blur-sm">
-        Before
+        {t.a11y.before}
       </span>
       <span className="pointer-events-none absolute right-4 top-4 rounded-full bg-ink/70 px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-wider text-porcelain backdrop-blur-sm">
-        After
+        {t.a11y.after}
       </span>
 
       {/* Handle */}
@@ -175,7 +177,6 @@ export function CompareSlider({
           <ChevronsLeftRight className="h-5 w-5" aria-hidden="true" />
         </div>
       </div>
-
     </div>
   );
 }

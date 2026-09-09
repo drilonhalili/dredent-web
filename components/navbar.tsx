@@ -1,20 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Phone, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/components/i18n-provider";
 import { business, nav } from "@/data/site-config";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pendingHref = useRef<string | null>(null);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 24);
   });
+
+  function closeMenu() {
+    document.body.style.overflow = "";
+    setOpen(false);
+  }
+
+  // Section links in the mobile menu don't rely on the browser's default anchor
+  // behaviour: that scroll starts while the menu is still collapsing and the page
+  // is still scroll-locked, and it gets cancelled. Instead the tap only closes the
+  // menu; once the collapse animation has finished (AnimatePresence
+  // onExitComplete, with a timer as a fallback) we set the hash and scroll to the
+  // section ourselves. Whichever fires first wins; the ref makes it run once.
+  function onMenuLinkClick(e: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    pendingHref.current = href;
+    closeMenu();
+    window.setTimeout(scrollToPendingSection, 350);
+  }
+
+  function scrollToPendingSection() {
+    const href = pendingHref.current;
+    pendingHref.current = null;
+    if (!href) return;
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    window.history.pushState(null, "", href);
+    target.scrollIntoView();
+  }
 
   // Close the mobile menu on Escape, and lock body scroll while it's open.
   useEffect(() => {
@@ -51,19 +84,20 @@ export function Navbar() {
           {business.name}
         </a>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-8 lg:flex" aria-label={t.a11y.primaryNav}>
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
               className="font-mono text-xs font-medium uppercase tracking-wider text-ink-soft transition-colors hover:text-cusp"
             >
-              {item.label}
+              {t.nav[item.id]}
             </a>
           ))}
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
+          <LanguageSwitcher />
           <a
             href={business.phoneHref}
             className="flex cursor-pointer items-center gap-2 rounded-full bg-cusp px-5 py-2.5 text-sm font-semibold text-porcelain transition-colors duration-200 hover:bg-cusp-deep"
@@ -78,14 +112,14 @@ export function Navbar() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="mobile-menu"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t.a11y.closeMenu : t.a11y.openMenu}
           className="cursor-pointer p-2 text-ink lg:hidden"
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </Container>
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={scrollToPendingSection}>
         {open && (
           <motion.div
             id="mobile-menu"
@@ -100,15 +134,18 @@ export function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => onMenuLinkClick(e, item.href)}
                   className="rounded-lg px-3 py-3 font-medium text-ink transition-colors hover:bg-cusp/5"
                 >
-                  {item.label}
+                  {t.nav[item.id]}
                 </a>
               ))}
+              <div className="mt-2 border-t border-mist pt-3">
+                <LanguageSwitcher variant="inline" onNavigate={closeMenu} />
+              </div>
               <a
                 href={business.phoneHref}
-                onClick={() => setOpen(false)}
+                onClick={closeMenu}
                 className="mt-2 flex items-center justify-center gap-2 rounded-full bg-cusp px-5 py-3 text-center text-sm font-semibold text-porcelain"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />

@@ -1,6 +1,27 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
+ * CYRILLIC FALLBACK (the /mk/ pages)
+ * Fraunces and Work Sans ship Latin glyphs only. These two faces are scoped to the
+ * Cyrillic block with unicode-range and listed first in the font stacks, so Cyrillic
+ * characters go to a system font that actually has them instead of the size-adjusted
+ * Times/Arial fallback next/font would otherwise pick. Latin text never matches them.
+ * Zero bytes; swap the local() names for a self-hosted Cyrillic family if you want the
+ * brand look on Macedonian too.
+ * ------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Dredent Display Cyrillic";
+  src: local("Georgia"), local("Noto Serif"), local("Times New Roman");
+  unicode-range: U+0400-04FF;
+}
+
+@font-face {
+  font-family: "Dredent Sans Cyrillic";
+  src: local("Helvetica Neue"), local("Segoe UI"), local("Roboto"), local("Noto Sans"), local("Arial");
+  unicode-range: U+0400-04FF;
+}
+
+/* ---------------------------------------------------------------------------
  * DESIGN TOKENS
  * A deliberate departure from the "sky blue + Inter" dental-template default:
  * porcelain/ink neutrals, a deep cusp-teal, and a single warm shade-guide gold.
@@ -16,8 +37,8 @@
   --color-shade-bright: #d6a85e;
   --color-mist: #d8ded6;
 
-  --font-sans: var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: "Dredent Sans Cyrillic", var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Dredent Display Cyrillic", var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
   --animate-drift: drift 22s ease-in-out infinite;
@@ -35,6 +56,14 @@
 
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Instant while loading, so the browser's jump to a #fragment on load (e.g.
+     /en/#faq after a language switch) isn't an animation that hydration, font
+     swaps or the trailing-slash redirect can cut short. components/scroll-behavior.tsx
+     removes the attribute on window load. */
+  html[data-loading] {
+    scroll-behavior: auto;
   }
 
   body {
