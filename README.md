@@ -141,7 +141,7 @@ no request ever reaches a third party:
   area. `components/map-embed.tsx` mounts it only when the section comes within ~800px
   of the viewport, so the ~250 KB library never loads for visitors who don't scroll down.
   It also draws the place card in the top-left corner (name, address, "Directions",
-  "View larger map"), like Google.s embedded maps; both links open Google Maps in a new
+  "View larger map"), like Google's embedded maps; both links open Google Maps in a new
   tab, so nothing from Google loads until the visitor clicks. Strings: dictionary `map`.
 - `public/map/vendor/` — MapLibre's own web worker (+ the shared module it imports),
   copied from `node_modules` by `scripts/copy-maplibre-worker.mjs`, which runs before
