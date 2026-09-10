@@ -13,7 +13,8 @@ import { defaultLocale, isLocale } from "@/lib/i18n";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
-  const t = getDictionary(isLocale(raw) ? raw : defaultLocale);
+  const locale = isLocale(raw) ? raw : defaultLocale;
+  const t = getDictionary(locale);
 
   return (
     <>
@@ -28,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <Faq />
         <Contact />
       </main>
-      <Footer t={t} />
+      <Footer t={t} locale={locale} />
     </>
   );
 }

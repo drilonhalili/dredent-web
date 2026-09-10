@@ -8,6 +8,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button-link";
 import { useI18n } from "@/components/i18n-provider";
 import { business, curatorFeed, instagramPosts } from "@/data/site-config";
+import { useConsentState } from "@/lib/consent";
 import { fill } from "@/lib/i18n";
 import { placeholderImage } from "@/lib/utils";
 
@@ -22,6 +23,7 @@ import { placeholderImage } from "@/lib/utils";
  */
 export function InstagramMosaic() {
   const { t } = useI18n();
+  const { consent } = useConsentState();
 
   return (
     <section className="py-20 sm:py-28">
@@ -38,7 +40,9 @@ export function InstagramMosaic() {
           </ButtonLink>
         </div>
 
-        {curatorFeed.feedId ? (
+        {/* The live feed loads Curator.io/Instagram scripts, so it needs consent;
+            otherwise the built-in placeholder mosaic stays. */}
+        {curatorFeed.feedId && consent?.media ? (
           <CuratorMosaic />
         ) : (
         <div className="mt-10 grid auto-rows-[130px] grid-cols-2 gap-3 sm:auto-rows-[170px] sm:grid-cols-4 sm:gap-4">

@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import localFont from "next/font/local";
+import { CookieBanner } from "@/components/cookie-banner";
 import { I18nProvider } from "@/components/i18n-provider";
 import { JsonLd } from "@/components/json-ld";
 import { ScrollBehavior } from "@/components/scroll-behavior";
 import { getDictionary } from "@/data/locales";
-import { business, seo } from "@/data/site-config";
+import { business, curatorFeed, seo } from "@/data/site-config";
 import { defaultLocale, isLocale, localePath, locales, ogLocales } from "@/lib/i18n";
 import "../globals.css";
 
@@ -117,6 +118,8 @@ export default async function LocaleLayout({ children, params }: Props) {
         </a>
         <I18nProvider locale={locale} dictionary={t}>
           {children}
+          {/* The only third-party embed is the Instagram feed, so the banner exists only when it is enabled. */}
+          {curatorFeed.feedId && <CookieBanner />}
         </I18nProvider>
         <JsonLd locale={locale} />
         <ScrollBehavior />

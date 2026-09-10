@@ -7,13 +7,14 @@ import { Container } from "@/components/ui/container";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useI18n } from "@/components/i18n-provider";
 import { business, nav } from "@/data/site-config";
+import { localePath } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const pendingHref = useRef<string | null>(null);
+  const pendingHash = useRef<string | null>(null);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -31,21 +32,24 @@ export function Navbar() {
   // menu; once the collapse animation has finished (AnimatePresence
   // onExitComplete, with a timer as a fallback) we set the hash and scroll to the
   // section ourselves. Whichever fires first wins; the ref makes it run once.
-  function onMenuLinkClick(e: MouseEvent<HTMLAnchorElement>, href: string) {
+  // Only on the home page: on the legal pages the links are ordinary navigations to
+  // /<locale>/#section, which the browser handles.
+  function onMenuLinkClick(e: MouseEvent<HTMLAnchorElement>, hash: string) {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (!document.getElementById(hash.slice(1))) return;
     e.preventDefault();
-    pendingHref.current = href;
+    pendingHash.current = hash;
     closeMenu();
     window.setTimeout(scrollToPendingSection, 350);
   }
 
   function scrollToPendingSection() {
-    const href = pendingHref.current;
-    pendingHref.current = null;
-    if (!href) return;
-    const target = document.getElementById(href.slice(1));
+    const hash = pendingHash.current;
+    pendingHash.current = null;
+    if (!hash) return;
+    const target = document.getElementById(hash.slice(1));
     if (!target) return;
-    window.history.pushState(null, "", href);
+    window.history.pushState(null, "", hash);
     target.scrollIntoView();
   }
 
@@ -72,7 +76,7 @@ export function Navbar() {
       )}
     >
       <Container className="flex h-16 items-center justify-between sm:h-20">
-        <a href="#top" className="flex items-center gap-2.5 font-display text-lg font-semibold text-ink">
+        <a href={localePath(locale, "#top")} className="flex items-center gap-2.5 font-display text-lg font-semibold text-ink">
           <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true">
             <rect width="64" height="64" rx="16" fill="#142F2A" />
             <path
@@ -87,8 +91,8 @@ export function Navbar() {
         <nav className="hidden items-center gap-8 lg:flex" aria-label={t.a11y.primaryNav}>
           {nav.map((item) => (
             <a
-              key={item.href}
-              href={item.href}
+              key={item.id}
+              href={localePath(locale, item.hash)}
               className="font-mono text-xs font-medium uppercase tracking-wider text-ink-soft transition-colors hover:text-cusp"
             >
               {t.nav[item.id]}
@@ -132,9 +136,9 @@ export function Navbar() {
             <Container className="flex flex-col gap-1 py-4">
               {nav.map((item) => (
                 <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={(e) => onMenuLinkClick(e, item.href)}
+                  key={item.id}
+                  href={localePath(locale, item.hash)}
+                  onClick={(e) => onMenuLinkClick(e, item.hash)}
                   className="rounded-lg px-3 py-3 font-medium text-ink transition-colors hover:bg-cusp/5"
                 >
                   {t.nav[item.id]}

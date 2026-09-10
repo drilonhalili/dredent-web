@@ -125,56 +125,60 @@ and replace `instagramPosts` with the fetched data.
 
 ## The contact section map
 
-`components/contact.tsx` pairs the clinic's contact details with an interactive Google
-Maps embed instead of a form (a static export has no backend to POST a form to anyway).
-The embed uses Google's official "Embed a map" iframe (Share → Embed a map on the
-clinic's listing) — keyless, no API key to manage — pinned to the Dredent place
-listing at street-level zoom, with `loading="lazy"` so it doesn't block first paint.
-Below the map, "Open in Google Maps" uses the listing's official share link, and
-"Get directions" uses the Maps URLs API: both open the native app on mobile, and for
-directions Google asks the visitor for their start point, so the site never touches
-their location. All three URLs live in `mapLinks` in `data/site-config.ts`. Note the iframe
-loads Google's scripts/cookies on page view; if you later add a consent banner, gate
-the iframe behind it (a click-to-load facade is the usual pattern).
+`components/contact.tsx` pairs the clinic's contact details with an interactive map instead of
+a form (a static export has no backend to POST a form to anyway). The map is served
+**entirely from this site**, so it loads for every visitor without any consent question and
+no request ever reaches a third party:
 
-## Languages
+- `public/map/tetovo.pmtiles` — OpenStreetMap-derived vector tiles for the Tetovo area
+  (zoom 10–15, a few MB), cut from a daily Protomaps planet build by
+  `scripts/build-map-tiles.mjs` with HTTP range requests. Re-run it to refresh the map
+  data or after changing the area; `mapArea` in `data/site-config.ts` must match its
+  `BOUNDS`.
+- `public/map/fonts/` and `public/map/sprites/` — the glyph ranges (Latin + Cyrillic) and
+  icons the style needs, copied from Protomaps' basemaps-assets.
+- `components/local-map.tsx` renders it with MapLibre GL and the Protomaps "light" style
+  (`@protomaps/basemaps`), labels in the page language, marker on the clinic, zoom
+  buttons, cooperative gestures (no scroll hijacking), panning limited to the extracted
+  area. `components/map-embed.tsx` mounts it only when the section comes within ~800px
+  of the viewport, so the ~250 KB library never loads for visitors who don't scroll down.
+- Attribution "Protomaps © OpenStreetMap" on the map is a licence requirement (ODbL) —
+  keep it.
 
-The site is trilingual — Albanian (`sq`, the default), English (`en`) and Macedonian
-(`mk`) — and every language is a fully static page at `/<locale>/`. The bare `/` is a
-tiny page that redirects to the default locale with a `<meta http-equiv="refresh">`,
-because a static export has no server to send a 301; if your host has redirect rules
-(Netlify `_redirects`, `vercel.json`, nginx), add a real 301 for `/` → `/sq/` there too.
+Below the map, "Open in Google Maps" uses the listing's official share link and "Get
+directions" the Maps URLs API: both open Google only when clicked, on mobile in the native
+app, and for directions Google asks the visitor for their start point, so the site never
+touches their location. Both URLs live in `mapLinks` in `data/site-config.ts`.
+## Cookie consent and legal pages
 
-- `lib/i18n.ts` — the list of locales and **`defaultLocale`**. Change that one constant to
-  make another language the default; no URL changes, since every locale is always
-  served under its own prefix.
-- `data/locales/{sq,en,mk}.ts` — one dictionary per language, all typed against
-  `data/locales/types.ts`, so a missing string is a build error rather than English
-  leaking through. Business facts that don't change with language (phone, links, image
-  paths, and the ids the dictionaries key on) stay in `data/site-config.ts`.
-- `app/[locale]/layout.tsx` — sets `<html lang>`, the per-language title, description and
-  keywords, `hreflang` alternates (`x-default` → the default locale), `og:locale`, and the
-  JSON-LD in that language. `app/[locale]/opengraph-image.tsx` renders a per-language share
-  card and `app/sitemap.ts` lists all three URLs with their alternates.
-- Client components read copy with `useI18n()` from `components/i18n-provider.tsx`; server
-  components take the dictionary as a prop (`Footer`) or call `getDictionary(locale)`.
-- `components/language-switcher.tsx` is the dropdown in the navbar (a globe + current
-  language; expands in place inside the mobile menu). It keeps the visitor on the section
-  they were reading (`#faq` etc.) when they switch language.
+The site itself sets no cookies — fonts, map tiles and everything else are self-hosted and
+there is no analytics. The one thing that *can* set cookies is the optional Curator.io
+Instagram feed, so consent is scoped to exactly that, and the banner only exists while
+`NEXT_PUBLIC_CURATOR_FEED_ID` is set:
 
-To add a language: append its code to `locales` in `lib/i18n.ts` and add its name and
-`og:locale` to the two maps there, create `data/locales/<code>.ts` (copy `en.ts`), and
-register it in `data/locales/index.ts`. The build fails until every string is present.
+- `components/cookie-banner.tsx` asks once (state in `localStorage`, key
+  `dredent-consent-v1`, re-asked after 12 months; store logic in `lib/consent.ts`).
+  "Only necessary" is the site's default state; "Allow third-party content" unlocks the
+  embeds. "Cookie settings" in the footer re-opens the banner.
+- `components/instagram-mosaic.tsx` loads the live Curator.io feed only with consent and
+  falls back to the built-in placeholder mosaic otherwise. The map needs no gating — see
+  "The contact section map" above.
+- Legal pages live at `/<locale>/terms/`, `/<locale>/privacy/` and `/<locale>/cookies/`
+  (`app/[locale]/[legal]/page.tsx` + `components/legal-page.tsx`), with their copy in
+  the dictionaries under `legal`. ⚠️ The texts were written from how the site actually
+  works — have them reviewed by a lawyer before launch and update them whenever you add a
+  tool (analytics, a form, a booking widget).
 
-Fonts: Fraunces and Work Sans are Latin-only, so Cyrillic on the `/mk/` pages falls back to
-a system serif/sans through the `unicode-range` faces at the top of `app/globals.css`
-(zero extra bytes; Latin text never touches them). Self-hosting a Cyrillic-capable pair and
-pointing those two `@font-face` rules at it is the polish step if you want the brand look in
-Macedonian too. The Macedonian Open Graph card already uses IBM Plex Mono, the one
-self-hosted face that has Cyrillic.
+If you later want a hosted CMP (OneTrust CookiePro, Cookiebot…), replace the banner and
+have `lib/consent.ts` read that vendor's consent state instead; the gating stays the same.
 
 ## A few deliberate follow-ups, not done here
 
+- **Before launch (SEO)**: replace `seo.siteUrl` in `data/site-config.ts` with the real
+  domain (canonical, hreflang, sitemap, robots, Open Graph and JSON-LD are all derived from
+  it); add the Google Search Console verification token to `generateMetadata` in
+  `app/[locale]/layout.tsx` (`verification.google`) and submit `/sitemap.xml`; link the
+  Google Business Profile listing; add a real `twitter.site` handle if the clinic has one.
 - **Font subsetting**: the three self-hosted fonts are full variable/static files
   (~1.9 MB total). `pyftsubset` or `glyphhanger` can trim this substantially once you know
   the final character set — Latin for `sq`/`en`; the `mk` pages need a Cyrillic-capable

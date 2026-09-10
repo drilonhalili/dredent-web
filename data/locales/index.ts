@@ -12,4 +12,4 @@ export function getDictionary(locale: Locale): Dictionary {
   return dictionaries[locale];
 }
 
-export type { Dictionary } from "./types";
+export type { Dictionary, LegalDocument, LegalSection } from "./types";

@@ -28,17 +28,24 @@ export const business = {
   bookingHref: "#contact",
 } as const;
 
-// Keyless Google Maps URLs — no API key to manage.
-// `view` is the clinic's official share link (Google Maps → Share → "Send a
-// link"); `directions` uses the Maps URLs API, so Google asks the visitor for
-// their start point and the site never touches their location. `embed` is the
-// official iframe source from Share → "Embed a map", pinned to the clinic's
-// place listing at street-level zoom.
+// Keyless Google Maps URLs — no API key to manage, and nothing loads from Google
+// until the visitor clicks. `view` is the clinic's official share link (Google
+// Maps → Share → "Send a link"); `directions` uses the Maps URLs API, so Google
+// asks the visitor for their start point and the site never touches their location.
 export const mapLinks = {
   view: "https://maps.app.goo.gl/eHsW9Q9bY4BZab189",
   directions: `https://www.google.com/maps/dir/?api=1&destination=${business.mapQuery}`,
-  embed:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1482.197567686761!2d20.96981249223825!3d42.01325510689699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1353f172135ef623%3A0x408c2cf4805105f4!2sDredent%20Dental%20Clinic!5e0!3m2!1sen!2sus!4v1783958068102!5m2!1sen!2sus",
+} as const;
+
+// The interactive map in the contact section is served entirely from this site
+// (components/local-map.tsx): vector tiles for this area live in
+// public/map/tetovo.pmtiles, cut from a Protomaps/OpenStreetMap build by
+// scripts/build-map-tiles.mjs — keep these bounds in sync with that script.
+export const mapArea = {
+  bounds: [20.93, 41.98, 21.02, 42.05] as [number, number, number, number],
+  minZoom: 12,
+  maxZoom: 18,
+  initialZoom: 15.5,
 } as const;
 
 // Curator.io feed for the Instagram section (mosaic template:
@@ -50,14 +57,14 @@ export const curatorFeed = {
   containerId: process.env.NEXT_PUBLIC_CURATOR_CONTAINER_ID ?? "curator-feed-default-feed-layout",
 } as const;
 
-// Section anchors. Labels: dictionary `nav`.
+// Section anchors (rendered as /<locale>/#hash so they also work from the legal pages). Labels: dictionary `nav`.
 export const nav = [
-  { id: "about", href: "#about" },
-  { id: "services", href: "#services" },
-  { id: "transformations", href: "#transformations" },
-  { id: "stories", href: "#stories" },
-  { id: "faq", href: "#faq" },
-  { id: "contact", href: "#contact" },
+  { id: "about", hash: "#about" },
+  { id: "services", hash: "#services" },
+  { id: "transformations", hash: "#transformations" },
+  { id: "stories", hash: "#stories" },
+  { id: "faq", hash: "#faq" },
+  { id: "contact", hash: "#contact" },
 ] as const;
 export type NavId = (typeof nav)[number]["id"];
 

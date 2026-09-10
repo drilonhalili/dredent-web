@@ -11,8 +11,9 @@ import {
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown, Globe } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useI18n } from "@/components/i18n-provider";
-import { localeNames, localePath, locales, type Locale } from "@/lib/i18n";
+import { localeNames, locales, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function LanguageSwitcher({
@@ -27,6 +28,10 @@ export function LanguageSwitcher({
   onNavigate?: () => void;
 }) {
   const { locale, t } = useI18n();
+  const pathname = usePathname();
+  // Same page in the other language: swap only the locale segment (/sq/terms/ → /en/terms/).
+  const rest = pathname.replace(/^\/[^/]+/, "") || "/";
+  const hrefFor = (target: Locale) => `/${target}${rest}`;
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -60,7 +65,7 @@ export function LanguageSwitcher({
     e.preventDefault();
     setOpen(false);
     onNavigate?.();
-    window.location.assign(localePath(target, window.location.hash));
+    window.location.assign(`${hrefFor(target)}${window.location.hash}`);
   }
 
   function moveFocus(offset: 1 | -1) {
@@ -146,7 +151,7 @@ export function LanguageSwitcher({
               return (
                 <li key={l}>
                   <a
-                    href={localePath(l)}
+                    href={hrefFor(l)}
                     hrefLang={l}
                     lang={l}
                     aria-current={active ? "page" : undefined}

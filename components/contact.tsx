@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Clock, ExternalLink, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import { MapEmbed } from "@/components/map-embed";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { useI18n } from "@/components/i18n-provider";
 import { business, mapLinks } from "@/data/site-config";
-import { fill } from "@/lib/i18n";
 
 export function Contact() {
   const { t } = useI18n();
@@ -66,14 +66,7 @@ export function Contact() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="flex flex-col overflow-hidden rounded-3xl border border-mist bg-porcelain-2"
         >
-          <iframe
-            src={mapLinks.embed}
-            title={fill(t.a11y.mapTitle, { name: business.name })}
-            className="min-h-[360px] w-full flex-1 border-0 sm:min-h-[420px]"
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
+          <MapEmbed />
           <div className="flex flex-wrap items-center justify-between gap-3 p-4 sm:px-6">
             <a
               href={mapLinks.directions}

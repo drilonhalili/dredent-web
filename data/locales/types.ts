@@ -1,5 +1,20 @@
 import type { CaseId, NavId, PostId, ServiceId } from "@/data/site-config";
 
+export type LegalSection = {
+  heading: string;
+  paragraphs: readonly string[];
+  bullets?: readonly string[];
+};
+
+// One legal page (terms / privacy / cookies) in one language.
+export type LegalDocument = {
+  title: string;
+  description: string;
+  updated: string;
+  intro: string;
+  sections: readonly LegalSection[];
+};
+
 // Every user-visible string on the site, in one language. The three dictionaries
 // (en.ts, sq.ts, mk.ts) must all satisfy this type, so a missing translation is a
 // type error rather than an English string leaking into another language.
@@ -18,7 +33,6 @@ export type Dictionary = {
     closeMenu: string;
     primaryNav: string;
     language: string;
-    mapTitle: string;
     dragToCompare: string;
     beforeAlt: string;
     afterAlt: string;
@@ -86,5 +100,30 @@ export type Dictionary = {
     visit: string;
     rights: string;
     developedBy: string;
+  };
+  consent: {
+    region: string;
+    title: string;
+    body: string;
+    accept: string;
+    reject: string;
+    policy: string;
+    settings: string;
+  };
+  map: {
+    label: string;
+    zoomIn: string;
+    zoomOut: string;
+    gestureMac: string;
+    gestureWindows: string;
+    gestureTouch: string;
+  };
+  legal: {
+    eyebrow: string;
+    updated: string;
+    backHome: string;
+    terms: LegalDocument;
+    privacy: LegalDocument;
+    cookies: LegalDocument;
   };
 };
