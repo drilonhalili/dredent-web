@@ -229,6 +229,8 @@ export const en: Dictionary = {
     gestureMac: "Use ⌘ + scroll to zoom the map",
     gestureWindows: "Use Ctrl + scroll to zoom the map",
     gestureTouch: "Use two fingers to move the map",
+    directions: "Directions",
+    viewLarger: "View larger map",
   },
   // ⚠️ Template texts written from how the site actually works (no forms, no analytics,
   // consent-gated embeds). Have them reviewed by a lawyer before launch and keep them in

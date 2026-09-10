@@ -223,6 +223,8 @@ export const sq: Dictionary = {
     gestureMac: "Përdorni ⌘ + rrotullim për të zmadhuar hartën",
     gestureWindows: "Përdorni Ctrl + rrotullim për të zmadhuar hartën",
     gestureTouch: "Përdorni dy gishta për të lëvizur hartën",
+    directions: "Udhëzime",
+    viewLarger: "Shiko hartën më të madhe",
   },
   // ⚠️ Tekste shembull — të rishikohen nga një jurist para publikimit (shih en.ts).
   legal: {

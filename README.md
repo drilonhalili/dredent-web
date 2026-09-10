@@ -17,10 +17,8 @@ Still placeholder / assumed — fix in `data/site-config.ts` before going live:
 
 - **Hours** — Google confirms only "Closes 6 PM." The Mon–Fri 08:00 opening and the
   weekend "Closed" are assumptions. Also sync `components/json-ld.tsx`.
-- **Email** (`info@dredent.example`) and **domain** (`seo.siteUrl`) — the site URL drives
+- **Domain** (`seo.siteUrl`, still a placeholder) — the site URL drives
   the canonical tag, sitemap.xml, robots.txt, and Open Graph URLs.
-- **Geo coordinates** — approximate Tetovo center; replace with the exact map pin
-  (right-click the pin in Google Maps → copy coordinates).
 - **Testimonials** — fictional samples. Replace with real, consented patient reviews or
   remove the section from `app/page.tsx`. Never ship invented reviews for a real clinic.
 - **Trust line** — "5.0 ★ on Google" is true but currently rests on a single review;
@@ -142,6 +140,9 @@ no request ever reaches a third party:
   buttons, cooperative gestures (no scroll hijacking), panning limited to the extracted
   area. `components/map-embed.tsx` mounts it only when the section comes within ~800px
   of the viewport, so the ~250 KB library never loads for visitors who don't scroll down.
+  It also draws the place card in the top-left corner (name, address, "Directions",
+  "View larger map"), like Google.s embedded maps; both links open Google Maps in a new
+  tab, so nothing from Google loads until the visitor clicks. Strings: dictionary `map`.
 - `public/map/vendor/` — MapLibre's own web worker (+ the shared module it imports),
   copied from `node_modules` by `scripts/copy-maplibre-worker.mjs`, which runs before
   `npm run dev` and `npm run build` (`predev`/`prebuild`). MapLibre 6 locates its worker

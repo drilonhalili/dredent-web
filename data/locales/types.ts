@@ -117,6 +117,8 @@ export type Dictionary = {
     gestureMac: string;
     gestureWindows: string;
     gestureTouch: string;
+    directions: string;
+    viewLarger: string;
   };
   legal: {
     eyebrow: string;
