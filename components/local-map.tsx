@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Map as MapLibreMap, Marker, NavigationControl, addProtocol, removeProtocol } from "maplibre-gl";
+import {
+  Map as MapLibreMap,
+  Marker,
+  NavigationControl,
+  addProtocol,
+  removeProtocol,
+  setWorkerUrl,
+} from "maplibre-gl";
 import { Protocol } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -23,9 +30,13 @@ export default function LocalMap() {
     const el = container.current;
     if (!el) return;
 
+    const origin = window.location.origin;
+    // MapLibre 6 locates its worker relative to import.meta.url, which webpack cannot
+    // resolve for it; without this the map renders only its background colour.
+    // The file is copied from node_modules by scripts/copy-maplibre-worker.mjs.
+    setWorkerUrl(`${origin}/map/vendor/maplibre-gl-worker.js`);
     const protocol = new Protocol();
     addProtocol("pmtiles", protocol.tile);
-    const origin = window.location.origin;
     const [west, south, east, north] = mapArea.bounds;
     const pad = 0.01;
 
@@ -63,6 +74,11 @@ export default function LocalMap() {
         "CooperativeGesturesHandler.MobileHelpText": t.map.gestureTouch,
       },
     });
+    map.on("error", (e) => console.error("[map]", e.error ?? e));
+    if (process.env.NODE_ENV !== "production") {
+      // Debug handle for the dev tools; stripped from production bundles.
+      (window as unknown as { __dredentMap?: unknown }).__dredentMap = map;
+    }
     map.addControl(new NavigationControl({ showCompass: false }), "top-right");
 
     const pin = document.createElement("div");
@@ -78,5 +94,14 @@ export default function LocalMap() {
     };
   }, [locale, t]);
 
-  return <div ref={container} role="img" aria-label={t.map.label} className="absolute inset-0" />;
+  // Sized by its own min-height: MapLibre's stylesheet forces position:relative on this
+  // element, so an absolute/inset layout would collapse it to 0px and clip the canvas.
+  return (
+    <div
+      ref={container}
+      role="img"
+      aria-label={t.map.label}
+      className="min-h-[360px] w-full sm:min-h-[420px]"
+    />
+  );
 }

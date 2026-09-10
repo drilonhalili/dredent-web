@@ -142,6 +142,12 @@ no request ever reaches a third party:
   buttons, cooperative gestures (no scroll hijacking), panning limited to the extracted
   area. `components/map-embed.tsx` mounts it only when the section comes within ~800px
   of the viewport, so the ~250 KB library never loads for visitors who don't scroll down.
+- `public/map/vendor/` — MapLibre's own web worker (+ the shared module it imports),
+  copied from `node_modules` by `scripts/copy-maplibre-worker.mjs`, which runs before
+  `npm run dev` and `npm run build` (`predev`/`prebuild`). MapLibre 6 locates its worker
+  with `new URL(file, import.meta.url)`, which webpack cannot rewrite, so without this the
+  map renders only its grey background colour. The component passes the URL via
+  `setWorkerUrl()`. If you upgrade `maplibre-gl`, the copy refreshes on the next dev/build.
 - Attribution "Protomaps © OpenStreetMap" on the map is a licence requirement (ODbL) —
   keep it.
 
