@@ -1,46 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import localFont from "next/font/local";
+import { fontClassName } from "@/app/fonts";
 import { CookieBanner } from "@/components/cookie-banner";
 import { I18nProvider } from "@/components/i18n-provider";
-import { JsonLd } from "@/components/json-ld";
 import { ScrollBehavior } from "@/components/scroll-behavior";
 import { getDictionary } from "@/data/locales";
 import { business, curatorFeed, seo } from "@/data/site-config";
 import { defaultLocale, isLocale, localePath, locales, ogLocales } from "@/lib/i18n";
+import { ogImageFor } from "@/lib/seo";
 import "../globals.css";
-
-// Self-hosted (SIL Open Font License — see app/fonts/OFL-LICENSE.txt) rather than
-// next/font/google, so there's no runtime dependency on Google's font CDN at all.
-// Fraunces and Work Sans cover Latin only; Cyrillic falls through to the
-// unicode-range faces in globals.css.
-const fraunces = localFont({
-  src: [
-    { path: "../fonts/Fraunces-Variable.ttf", weight: "300 900", style: "normal" },
-    { path: "../fonts/Fraunces-Italic-Variable.ttf", weight: "300 900", style: "italic" },
-  ],
-  variable: "--font-fraunces",
-  display: "swap",
-});
-
-const workSans = localFont({
-  src: [
-    { path: "../fonts/WorkSans-Variable.ttf", weight: "100 900", style: "normal" },
-    { path: "../fonts/WorkSans-Italic-Variable.ttf", weight: "100 900", style: "italic" },
-  ],
-  variable: "--font-work-sans",
-  display: "swap",
-});
-
-const plexMono = localFont({
-  src: [
-    { path: "../fonts/IBMPlexMono-Regular.ttf", weight: "400", style: "normal" },
-    { path: "../fonts/IBMPlexMono-Medium.ttf", weight: "500", style: "normal" },
-    { path: "../fonts/IBMPlexMono-SemiBold.ttf", weight: "600", style: "normal" },
-  ],
-  variable: "--font-plex-mono",
-  display: "swap",
-});
 
 type Props = { children: ReactNode; params: Promise<{ locale: string }> };
 
@@ -55,6 +23,7 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
   const locale = isLocale(raw) ? raw : defaultLocale;
   const t = getDictionary(locale);
   const languages = Object.fromEntries(locales.map((l) => [l, localePath(l)]));
+  const image = ogImageFor(locale, t.tagline);
 
   return {
     metadataBase: new URL(seo.siteUrl),
@@ -77,11 +46,13 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
       locale: ogLocales[locale],
       alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocales[l]),
       type: "website",
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
       title: t.seo.title,
       description: t.seo.description,
+      images: [image],
     },
     robots: {
       index: true,
@@ -107,7 +78,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       lang={locale}
       // Removed by <ScrollBehavior /> once the page has loaded; see globals.css.
       data-loading=""
-      className={`${fraunces.variable} ${workSans.variable} ${plexMono.variable}`}
+      className={fontClassName}
     >
       <body>
         <a
@@ -121,7 +92,6 @@ export default async function LocaleLayout({ children, params }: Props) {
           {/* The only third-party embed is the Instagram feed, so the banner exists only when it is enabled. */}
           {curatorFeed.feedId && <CookieBanner />}
         </I18nProvider>
-        <JsonLd locale={locale} />
         <ScrollBehavior />
       </body>
     </html>

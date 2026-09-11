@@ -9,6 +9,10 @@ const nextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  // app/global-not-found.tsx renders out/404.html. The site has two root layouts
+  // (app/(redirect) and app/[locale]), so the regular app/not-found.tsx convention,
+  // which needs a single root layout, is not available.
+  experimental: { globalNotFound: true },
 };
 
 export default nextConfig;

@@ -25,7 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale: rawLocale, legal } = await params;
   const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
   if (!isLegalSlug(legal)) return {};
-  return legalMetadata(locale, legal, getDictionary(locale).legal[legal]);
+  const t = getDictionary(locale);
+  return legalMetadata(locale, legal, t.legal[legal], t.tagline);
 }
 
 export default async function LegalRoute({ params }: Props) {

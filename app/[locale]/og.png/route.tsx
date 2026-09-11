@@ -4,17 +4,19 @@ import { ImageResponse } from "next/og";
 import { getDictionary } from "@/data/locales";
 import { business } from "@/data/site-config";
 import { defaultLocale, isLocale, locales } from "@/lib/i18n";
+import { ogImageSize } from "@/lib/seo";
 
+// /<locale>/og.png — the social preview card, one per language, rendered at build
+// time. Referenced from the metadata in app/[locale]/layout.tsx and lib/seo.ts (see
+// ogImageFor there for why this is a route and not an opengraph-image.tsx file).
 export const dynamic = "force-static";
-export const alt = business.name;
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export default async function Image({ params }: { params: Promise<{ locale: string }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
   const locale = isLocale(raw) ? raw : defaultLocale;
   const t = getDictionary(locale);
@@ -80,6 +82,6 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
         </div>
       </div>
     ),
-    { ...size, ...(fonts ? { fonts } : {}) },
+    { ...ogImageSize, ...(fonts ? { fonts } : {}) },
   );
 }

@@ -19,6 +19,8 @@ Still placeholder / assumed — fix in `data/site-config.ts` before going live:
   weekend "Closed" are assumptions. Also sync `components/json-ld.tsx`.
 - **Domain** (`seo.siteUrl`, still a placeholder) — the site URL drives
   the canonical tag, sitemap.xml, robots.txt, and Open Graph URLs.
+- **Footer credit link** — set `credits.href` in `data/site-config.ts` once the agency site
+  has a URL; until then the credit renders as plain text.
 - **Testimonials** — fictional samples. Replace with real, consented patient reviews or
   remove the section from `app/page.tsx`. Never ship invented reviews for a real clinic.
 - **Trust line** — "5.0 ★ on Google" is true but currently rests on a single review;
@@ -43,9 +45,20 @@ Still placeholder / assumed — fix in `data/site-config.ts` before going live:
   grid in the spirit of [curator.io's Mosaic template](https://curator.io/templates/mosaic).
   Ships with placeholder tiles; see "Going live with Instagram" below.
 - **SEO**: per-page metadata, a dynamically generated Open Graph image
-  (`app/opengraph-image.tsx`, renders to a real PNG at build time), `sitemap.xml` and
-  `robots.txt` (`app/sitemap.ts` / `app/robots.ts`), and JSON-LD for both `Dentist`
-  (local business/NAP/hours) and `FAQPage` (`components/json-ld.tsx`).
+  (`app/[locale]/og.png/route.tsx`, one PNG per language rendered at build time — a route
+  handler rather than the `opengraph-image` file convention, so the exported file has a
+  `.png` extension and static hosts serve it as `image/png` instead of `application/octet-stream`), `sitemap.xml` and
+  `robots.txt` (`app/sitemap.ts` / `app/robots.ts`), and JSON-LD (`components/json-ld.tsx`): `Dentist` (local
+  business/NAP/hours) on every page, `FAQPage` only on the home page where the questions
+  are, `BreadcrumbList` on the legal pages.
+- **Icons** — `app/icon.svg` for modern browsers, `app/favicon.ico` for Safari and for
+  anything that requests `/favicon.ico` blindly (regenerate from `public/icons/icon-512.png`
+  with `node scripts/make-favicon.mjs`, needs `npm i --no-save sharp`), `app/apple-icon.png`,
+  and the manifest icons in `public/icons/`.
+- **404 page** — `app/global-not-found.tsx` is exported as `out/404.html`, which static hosts
+  serve for unknown URLs. It uses Next's experimental `globalNotFound` flag because the app has
+  two root layouts, which rules out the regular `app/not-found.tsx`. Default language first,
+  links to the other two; copy in dictionary `notFound`.
 - **Fully responsive**, keyboard-accessible (visible focus rings, a skip-to-content link,
   the compare slider works with arrow keys, `role="slider"` + `aria-value*`), and respects
   `prefers-reduced-motion` globally.

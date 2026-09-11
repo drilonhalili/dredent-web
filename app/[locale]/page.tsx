@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/testimonials";
 import { Faq } from "@/components/faq";
 import { Contact } from "@/components/contact";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { getDictionary } from "@/data/locales";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
@@ -30,6 +31,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <Contact />
       </main>
       <Footer t={t} locale={locale} />
+      <JsonLd locale={locale} />
     </>
   );
 }

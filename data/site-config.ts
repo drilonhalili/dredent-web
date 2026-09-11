@@ -52,6 +52,9 @@ export const mapArea = {
 // https://curator.io/templates/mosaic). While feedId is empty the section keeps
 // rendering its built-in placeholder mosaic; set the real values in .env.local
 // (see .env.example) once the feed is created and published in Curator.
+// Footer credit link. Leave `href` empty to render the credit as plain text.
+export const credits = { href: "" } as const;
+
 export const curatorFeed = {
   feedId: process.env.NEXT_PUBLIC_CURATOR_FEED_ID ?? "",
   containerId: process.env.NEXT_PUBLIC_CURATOR_CONTAINER_ID ?? "curator-feed-default-feed-layout",

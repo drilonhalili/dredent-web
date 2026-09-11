@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { business } from "@/data/site-config";
+import { business, seo } from "@/data/site-config";
 import { defaultLocale, localePath } from "@/lib/i18n";
 
 // `/` → `/<defaultLocale>/`. A static export has no server to send a 301, and Next's
@@ -12,6 +12,7 @@ export const dynamic = "force-static";
 const target = localePath(defaultLocale);
 
 export const metadata: Metadata = {
+  metadataBase: new URL(seo.siteUrl),
   title: business.name,
   alternates: { canonical: target },
 };

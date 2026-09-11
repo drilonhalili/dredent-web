@@ -120,6 +120,7 @@ export type Dictionary = {
     directions: string;
     viewLarger: string;
   };
+  notFound: { title: string; body: string; home: string };
   legal: {
     eyebrow: string;
     updated: string;

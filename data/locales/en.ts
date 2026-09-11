@@ -235,6 +235,11 @@ export const en: Dictionary = {
   // ⚠️ Template texts written from how the site actually works (no forms, no analytics,
   // consent-gated embeds). Have them reviewed by a lawyer before launch and keep them in
   // step with any tool you add later.
+  notFound: {
+    title: "Page not found",
+    body: "The address may have been mistyped, or the page has moved. Everything about the clinic is on the home page.",
+    home: "Back to the home page",
+  },
   legal: {
     eyebrow: "Legal",
     updated: "Last updated",

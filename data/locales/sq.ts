@@ -227,6 +227,11 @@ export const sq: Dictionary = {
     viewLarger: "Shiko hartën më të madhe",
   },
   // ⚠️ Tekste shembull — të rishikohen nga një jurist para publikimit (shih en.ts).
+  notFound: {
+    title: "Faqja nuk u gjet",
+    body: "Adresa mund të jetë shkruar gabim, ose faqja është zhvendosur. Gjithçka rreth klinikës gjendet në faqen kryesore.",
+    home: "Kthehu në faqen kryesore",
+  },
   legal: {
     eyebrow: "Ligjore",
     updated: "Përditësuar më",

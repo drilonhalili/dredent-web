@@ -3,14 +3,15 @@ import { business, mapLinks, seo } from "@/data/site-config";
 import { localePath, type Locale } from "@/lib/i18n";
 
 /**
- * Structured data for local SEO, rendered once per locale page in the language
- * of that page. Two schema blocks:
+ * Structured data for local SEO, rendered by the home page (both blocks) and the
+ * legal pages (Dentist only), in the language of that page:
  *  - Dentist (a LocalBusiness subtype) with NAP, geo, hours — powers the Knowledge
  *    Panel / map pack eligibility in Google.
  *  - FAQPage — makes the FAQ section eligible for FAQ rich results.
  * Rendered as a plain <script> tag so it's static-export friendly (no client JS needed).
  */
-export function JsonLd({ locale }: { locale: Locale }) {
+// `faq` is true only on the home page, where the FAQ section actually is.
+export function JsonLd({ locale, faq = true }: { locale: Locale; faq?: boolean }) {
   const t = getDictionary(locale);
 
   const dentistSchema = {
@@ -19,7 +20,7 @@ export function JsonLd({ locale }: { locale: Locale }) {
     name: business.name,
     description: t.seo.description,
     url: `${seo.siteUrl}${localePath(locale)}`,
-    image: `${seo.siteUrl}${localePath(locale)}opengraph-image`,
+    image: `${seo.siteUrl}${localePath(locale)}og.png`,
     logo: `${seo.siteUrl}/icons/icon-512.png`,
     telephone: business.phone,
     email: business.email,
@@ -81,10 +82,12 @@ export function JsonLd({ locale }: { locale: Locale }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(dentistSchema) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+      {faq && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
     </>
   );
 }

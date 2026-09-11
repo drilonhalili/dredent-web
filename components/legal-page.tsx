@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Footer } from "@/components/footer";
+import { JsonLd } from "@/components/json-ld";
 import { Navbar } from "@/components/navbar";
 import type { Dictionary, LegalDocument } from "@/data/locales";
 import { business, seo } from "@/data/site-config";
@@ -75,6 +76,7 @@ export function LegalPage({
         </Container>
       </main>
       <Footer t={t} locale={locale} />
+      <JsonLd locale={locale} faq={false} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
     </>
   );
