@@ -29,7 +29,7 @@ const FOCUS = {
   DVjAVbniij7: { y: 0.66 },
   DY5GbzSKiNI: { y: 0.62 },
   // Stacked before/after collage: zoom in on the lower ("after") photo only.
-  Da5fq3WitgG: { y: 0.78, zoom: 0.72 },
+  Da5fq3WitgG: { y: 0.75, zoom: 0.68 },
 };
 
 await fs.mkdir(OUT, { recursive: true });
