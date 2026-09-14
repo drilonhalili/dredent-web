@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { fontClassName } from "@/app/fonts";
+import { Analytics } from "@/components/analytics";
 import { getDictionary } from "@/data/locales";
 import { business } from "@/data/site-config";
 import { defaultLocale, localePath, locales } from "@/lib/i18n";
@@ -49,6 +50,7 @@ export default function GlobalNotFound() {
             })}
           </ul>
         </main>
+        <Analytics />
       </body>
     </html>
   );

@@ -234,7 +234,7 @@ export const en: Dictionary = {
     directions: "Directions",
     viewLarger: "View larger map",
   },
-  // ⚠️ Template texts written from how the site actually works (no forms, no analytics,
+  // ⚠️ Template texts written from how the site actually works (no forms, cookieless analytics only,
   // consent-gated embeds). Have them reviewed by a lawyer before launch and keep them in
   // step with any tool you add later.
   notFound: {
@@ -250,7 +250,7 @@ export const en: Dictionary = {
       title: "Privacy Policy",
       description:
         "How Dredent Dental Clinic handles personal data on this website: what we collect, why, how long we keep it and your rights.",
-      updated: "10 September 2026",
+      updated: "14 September 2026",
       intro:
         "This policy explains what personal data Dredent Dental Clinic processes when you use this website or contact us through it, and what rights you have. It covers the website only — the handling of patient records at the clinic is governed by separate rules and professional confidentiality.",
       sections: [
@@ -268,7 +268,7 @@ export const en: Dictionary = {
             "Technical data: this is a static website with no accounts or forms. Our hosting provider records standard server logs (IP address, browser type, requested page, time) to deliver the site and protect it against abuse. Legal basis: our legitimate interest in running a secure website.",
             "The map: the interactive map in the contact section is served entirely from our own server (map data © OpenStreetMap contributors) and involves no third party. The links to Google Maps open Google's site only when you click them.",
             "Third-party content: the Instagram section may load a feed from Curator.io. It loads only after you allow it in the cookie banner, which appears only when that feed is enabled; the providers then process data under their own privacy policies. Legal basis: your consent, which you can withdraw at any time via “Cookie settings” in the footer.",
-            "We use no analytics, advertising or tracking cookies on this website.",
+            "Visitor statistics: we use Cloudflare Web Analytics to count visits and to see which pages, countries, browsers and referring sites bring people to us. It uses no cookies or other browser storage and does not fingerprint or identify you; the statistics are aggregated. Cloudflare processes the technical request data (including the IP address) on our behalf to produce them. Legal basis: our legitimate interest in understanding how the website is used. We use no advertising or tracking cookies.",
           ],
         },
         {
@@ -286,7 +286,7 @@ export const en: Dictionary = {
         {
           heading: "Who we share data with",
           paragraphs: [
-            "We do not sell personal data. It is shared only with service providers who act on our instructions (such as our hosting provider) and, when you allow third-party content, with Curator.io/Meta (Instagram feed). Some of these providers are established outside North Macedonia and the EU; transfers rely on their standard contractual safeguards.",
+            "We do not sell personal data. It is shared only with service providers who act on our instructions (such as our hosting provider, and Cloudflare, Inc., which produces our aggregated visitor statistics) and, when you allow third-party content, with Curator.io/Meta (Instagram feed). Some of these providers are established outside North Macedonia and the EU; transfers rely on their standard contractual safeguards.",
           ],
         },
         {
@@ -376,7 +376,7 @@ export const en: Dictionary = {
       title: "Cookie Policy",
       description:
         "Which cookies and similar storage the Dredent Dental Clinic website uses, what they do, and how to change your choice.",
-      updated: "10 September 2026",
+      updated: "14 September 2026",
       intro:
         "This page explains the cookies and similar browser storage used on this website. We keep it deliberately short: the site itself sets no tracking cookies, and third-party content that could set them loads only with your consent.",
       sections: [
@@ -393,7 +393,7 @@ export const en: Dictionary = {
             "Your cookie choice (strictly necessary): when you use the cookie banner, we save your decision in your browser's local storage under the key “dredent-consent-v1”, together with the date. It is not a tracking cookie, is never sent to us or anyone else, and expires after 12 months, after which we ask again.",
             "The map (no cookies): the interactive map in the contact section is served entirely from our own server — map tiles, fonts and icons — and loads nothing from third parties. The links to Google Maps open Google's website only when you click them.",
             "Instagram feed via Curator.io (only with your consent, and only when the live feed is enabled): loading the feed sends requests to Curator.io and Instagram (Meta), which may set their own cookies.",
-            "Nothing else: we use no analytics, advertising or social-media tracking cookies. Fonts are hosted on our own server.",
+            "Visitor statistics (no cookies): Cloudflare Web Analytics measures visits with a small script that stores nothing in your browser — no cookies, no local storage — and does not fingerprint you. Beyond that we use no analytics, advertising or social-media tracking cookies. Fonts are hosted on our own server.",
           ],
         },
         {

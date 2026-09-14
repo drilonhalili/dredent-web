@@ -242,7 +242,7 @@ export const sq: Dictionary = {
       title: "Politika e Privatësisë",
       description:
         "Si i trajton Dredent Dental Clinic të dhënat personale në këtë faqe: çfarë mbledhim, përse, sa kohë i ruajmë dhe të drejtat tuaja.",
-      updated: "10 shtator 2026",
+      updated: "14 shtator 2026",
       intro:
         "Kjo politikë shpjegon cilat të dhëna personale përpunon Dredent Dental Clinic kur përdorni këtë faqe interneti ose na kontaktoni përmes saj, dhe cilat janë të drejtat tuaja. Ajo mbulon vetëm faqen e internetit — trajtimi i kartelave të pacientëve në klinikë rregullohet nga rregulla të veçanta dhe nga konfidencialiteti profesional.",
       sections: [
@@ -260,7 +260,7 @@ export const sq: Dictionary = {
             "Të dhëna teknike: kjo është një faqe statike, pa llogari dhe pa formularë. Ofruesi ynë i hostimit regjistron log-e standarde të serverit (adresa IP, lloji i shfletuesit, faqja e kërkuar, ora) për të shërbyer faqen dhe për ta mbrojtur nga abuzimet. Baza ligjore: interesi ynë legjitim për një faqe të sigurt.",
             "Harta: harta interaktive në seksionin e kontaktit shërbehet tërësisht nga serveri ynë (të dhënat e hartës © kontribuuesit e OpenStreetMap) dhe nuk përfshin asnjë palë të tretë. Lidhjet drejt Google Maps e hapin faqen e Google vetëm kur klikoni mbi to.",
             "Përmbajtje e palëve të treta: seksioni i Instagramit mund të ngarkojë një feed nga Curator.io. Ai ngarkohet vetëm pasi ta lejoni në banerin e cookies, i cili shfaqet vetëm kur ky feed është i aktivizuar; më pas ofruesit përpunojnë të dhënat sipas politikave të tyre të privatësisë. Baza ligjore: pëlqimi juaj, të cilin mund ta tërhiqni në çdo kohë përmes “Cilësimet e cookies” në fund të faqes.",
-            "Në këtë faqe nuk përdorim cookies analitike, reklamuese apo gjurmuese.",
+            "Statistika të vizitorëve: përdorim Cloudflare Web Analytics për të numëruar vizitat dhe për të parë cilat faqe, vende, shfletues dhe faqe referuese na sjellin vizitorë. Nuk përdor cookies apo ruajtje tjetër në shfletues dhe nuk ju identifikon e nuk ju gjurmon; statistikat janë të përmbledhura. Cloudflare përpunon në emrin tonë të dhënat teknike të kërkesës (përfshirë adresën IP) për t'i prodhuar ato. Baza ligjore: interesi ynë legjitim për të kuptuar si përdoret faqja. Nuk përdorim cookies reklamuese apo gjurmuese.",
           ],
         },
         {
@@ -278,7 +278,7 @@ export const sq: Dictionary = {
         {
           heading: "Me kë i ndajmë të dhënat",
           paragraphs: [
-            "Nuk shesim të dhëna personale. Ato ndahen vetëm me ofrues shërbimesh që veprojnë sipas udhëzimeve tona (si ofruesi i hostimit) dhe, kur lejoni përmbajtjen e palëve të treta, me Curator.io/Meta (feed-i i Instagramit). Disa nga këta ofrues ndodhen jashtë Maqedonisë së Veriut dhe BE-së; transferimet mbështeten në masat e tyre standarde kontraktuale të mbrojtjes.",
+            "Nuk shesim të dhëna personale. Ato ndahen vetëm me ofrues shërbimesh që veprojnë sipas udhëzimeve tona (si ofruesi i hostimit dhe Cloudflare, Inc., që prodhon statistikat tona të përmbledhura të vizitorëve) dhe, kur lejoni përmbajtjen e palëve të treta, me Curator.io/Meta (feed-i i Instagramit). Disa nga këta ofrues ndodhen jashtë Maqedonisë së Veriut dhe BE-së; transferimet mbështeten në masat e tyre standarde kontraktuale të mbrojtjes.",
           ],
         },
         {
@@ -368,7 +368,7 @@ export const sq: Dictionary = {
       title: "Politika e Cookies",
       description:
         "Cilat cookies dhe ruajtje të ngjashme përdor faqja e Dredent Dental Clinic, çfarë bëjnë dhe si ta ndryshoni zgjedhjen tuaj.",
-      updated: "10 shtator 2026",
+      updated: "14 shtator 2026",
       intro:
         "Kjo faqe shpjegon cookies dhe ruajtjen e ngjashme në shfletues që përdoren në këtë faqe interneti. E mbajmë qëllimisht të shkurtër: vetë faqja nuk vendos cookies gjurmimi, ndërsa përmbajtja e palëve të treta që mund t'i vendosë ngarkohet vetëm me pëlqimin tuaj.",
       sections: [
@@ -385,7 +385,7 @@ export const sq: Dictionary = {
             "Zgjedhja juaj për cookies (rreptësisht e nevojshme): kur përdorni banerin e cookies, vendimin tuaj e ruajmë në ruajtjen lokale të shfletuesit me çelësin “dredent-consent-v1”, bashkë me datën. Nuk është cookie gjurmimi, nuk i dërgohet kurrë neve apo dikujt tjetër dhe skadon pas 12 muajsh, pas së cilës ju pyesim sërish.",
             "Harta (pa cookies): harta interaktive në seksionin e kontaktit shërbehet tërësisht nga serveri ynë — pllakat e hartës, fontet dhe ikonat — dhe nuk ngarkon asgjë nga palë të treta. Lidhjet drejt Google Maps e hapin faqen e Google vetëm kur klikoni mbi to.",
             "Feed-i i Instagramit përmes Curator.io (vetëm me pëlqimin tuaj dhe vetëm kur feed-i live është i aktivizuar): ngarkimi i feed-it dërgon kërkesa te Curator.io dhe Instagram (Meta), që mund të vendosin cookies të veta.",
-            "Asgjë tjetër: nuk përdorim cookies analitike, reklamuese apo të gjurmimit nga rrjetet sociale. Fontet hostohen në serverin tonë.",
+            "Statistika të vizitorëve (pa cookies): Cloudflare Web Analytics mat vizitat me një skript të vogël që nuk ruan asgjë në shfletuesin tuaj — as cookies, as local storage — dhe nuk ju identifikon. Përtej kësaj nuk përdorim cookies analitike, reklamuese apo të gjurmimit nga rrjetet sociale. Fontet hostohen në serverin tonë.",
           ],
         },
         {

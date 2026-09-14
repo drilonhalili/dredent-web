@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { fontClassName } from "@/app/fonts";
+import { Analytics } from "@/components/analytics";
 import { CookieBanner } from "@/components/cookie-banner";
 import { I18nProvider } from "@/components/i18n-provider";
 import { ScrollBehavior } from "@/components/scroll-behavior";
@@ -93,6 +94,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           {curatorFeedActive && <CookieBanner />}
         </I18nProvider>
         <ScrollBehavior />
+        <Analytics />
       </body>
     </html>
   );

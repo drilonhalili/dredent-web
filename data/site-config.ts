@@ -65,6 +65,15 @@ export const curatorFeed: { enabled: boolean; feedId: string; containerId: strin
 };
 export const curatorFeedActive = curatorFeed.enabled && curatorFeed.feedId !== "";
 
+// Cloudflare Web Analytics (components/analytics.tsx): cookieless and fingerprint-free,
+// so it runs without consent and is not part of the cookie banner. Nothing loads while
+// the token is empty. Get it in the Cloudflare dashboard: Web Analytics -> Add a site ->
+// manual JavaScript snippet -> the "token" value. It ends up in the page HTML by design,
+// so it is not a secret; still, set it in .env.local rather than here.
+export const analytics = {
+  cloudflareToken: process.env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN ?? "",
+} as const;
+
 // Section anchors (rendered as /<locale>/#hash so they also work from the legal pages). Labels: dictionary `nav`.
 export const nav = [
   { id: "about", hash: "#about" },
