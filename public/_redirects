@@ -1,0 +1,6 @@
+# Cloudflare Pages redirects — https://developers.cloudflare.com/pages/configuration/redirects/
+# The apex domain is canonical (seo.siteUrl in data/site-config.ts); www redirects to it.
+https://www.dredent.com/* https://dredent.com/:splat 301
+# The language root. The export has no server, so this replaces the meta-refresh page at /.
+# Keep the target in step with defaultLocale in lib/i18n.ts.
+/ /sq/ 301

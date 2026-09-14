@@ -17,8 +17,8 @@ Still placeholder / assumed — fix in `data/site-config.ts` before going live:
 
 - **Hours** — confirmed with the clinic (Mon–Fri 10:00–18:00, Sat 10:00–15:00, Sun closed).
   If they change, edit `business.hours` and sync `components/json-ld.tsx`.
-- **Domain** (`seo.siteUrl`, still a placeholder) — the site URL drives
-  the canonical tag, sitemap.xml, robots.txt, and Open Graph URLs.
+- **Domain** — `seo.siteUrl` is `https://dredent.com` (bought 14 Sep 2026, Cloudflare Registrar,
+  renews Sep 2028). See "Deployment" for hosting, DNS and the .mk redirect.
 - **Analytics token** — once the domain exists, add it as a site in Cloudflare Web Analytics
   and put the snippet's token in `.env.local` as `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (see
   "Analytics" below). Until then no analytics script is rendered.
@@ -232,6 +232,37 @@ only exists while `curatorFeed.enabled` is true and `NEXT_PUBLIC_CURATOR_FEED_ID
 
 If you later want a hosted CMP (OneTrust CookiePro, Cookiebot…), replace the banner and
 have `lib/consent.ts` read that vendor's consent state instead; the gating stays the same.
+
+## Deployment (Cloudflare Pages)
+
+The domain is registered at Cloudflare, so the site is hosted on **Cloudflare Pages** (free,
+global CDN, no commercial-use restriction) from the GitHub repo:
+
+1. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → this repo.
+2. Build settings: framework preset **Next.js (Static HTML Export)**, build command
+   `npm run build`, output directory `out`. Environment variables (Production *and* Preview):
+   `NODE_VERSION` = `24`, `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` = the Web Analytics token.
+3. After the first deploy: project → Custom domains → add `dredent.com`, then `www.dredent.com`.
+   Cloudflare creates the DNS records itself because the zone is in the same account.
+4. `public/_redirects` (copied into `out/`) sends `www` to the apex domain and `/` to `/sq/`
+   with real 301s; `public/_headers` adds the security headers and long cache lifetimes for
+   hashed assets. Both are Cloudflare Pages conventions; other hosts need their own equivalent.
+5. Every push to `main` deploys; every pull request gets a `*.pages.dev` preview URL.
+
+DNS hygiene for a domain that sends no email (the clinic uses Gmail): in the zone add
+`MX @ 0 .` (null MX), `TXT @ "v=spf1 -all"` and `TXT _dmarc "v=DMARC1; p=reject;"`, so
+nobody can spoof `.com`. Under SSL/TLS enable "Always Use HTTPS".
+
+**dredent.mk** (once bought at a MARnet registrar such as Unet or MKhost): add it to
+Cloudflare as a second free zone, switch its nameservers at the registrar to the two
+Cloudflare gives, add a proxied placeholder record (`A @ 192.0.2.1`), and create a Redirect
+Rule: all requests → `https://dredent.com/${path}` (301, preserve query). The .mk then
+resolves with HTTPS and lands on the same page of the .com.
+
+A Content-Security-Policy is deliberately not set yet: the map worker, the Three.js hero
+and the analytics beacon each need an allowance, so add it to `public/_headers` only after
+testing on a preview URL. A starting point:
+`default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`.
 
 ## A few deliberate follow-ups, not done here
 

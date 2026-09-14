@@ -158,8 +158,9 @@ export const instagramTileSrc = (post: InstagramPost) => `/instagram/${post.shor
 
 
 export const seo = {
-  // TODO: replace with the real domain before launch — canonical URLs, hreflang
-  // alternates, sitemap.xml, robots.txt, and Open Graph tags are all generated
-  // from this value. Titles, descriptions and keywords: dictionary `seo`.
-  siteUrl: "https://www.dredent.example",
+  // Canonical origin (no trailing slash): canonical URLs, hreflang alternates,
+  // sitemap.xml, robots.txt, Open Graph tags and JSON-LD are all generated from it.
+  // The apex domain is canonical; www redirects to it (public/_redirects).
+  // Titles, descriptions and keywords: dictionary `seo`.
+  siteUrl: "https://dredent.com",
 } as const;
