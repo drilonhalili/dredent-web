@@ -102,7 +102,7 @@ export const en: Dictionary = {
       general: {
         title: "General & Preventive Care",
         description:
-          "Cleanings, exams, and early diagnostics — the unglamorous groundwork that keeps the rest of this list unnecessary.",
+          "Cleanings, exams, and early diagnostics — the unglamorous groundwork that keeps the rest of this list unnecessary. For adults and children alike.",
       },
     },
   },

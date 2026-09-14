@@ -100,7 +100,7 @@ export const sq: Dictionary = {
       general: {
         title: "Kujdes i Përgjithshëm & Parandalues",
         description:
-          "Pastrime, kontrolle dhe diagnostikim i hershëm — puna e heshtur bazë që e bën pjesën tjetër të kësaj liste të panevojshme.",
+          "Pastrime, kontrolle dhe diagnostikim i hershëm — puna e heshtur bazë që e bën pjesën tjetër të kësaj liste të panevojshme. Për të rritur dhe për fëmijë.",
       },
     },
   },
