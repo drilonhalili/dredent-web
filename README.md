@@ -3,7 +3,7 @@
 A static, animated marketing site for **Dredent Dental Clinic** (Strasho Pindjur Rd 121,
 Tetovo, North Macedonia) — Next.js (App Router, static export), Tailwind v4, Framer
 Motion, and a Three.js hero scene. The clinic's real name, address, phone, socials, and
-Google-profile description are wired in; images and some copy remain placeholders — see
+Google-profile description and photos are wired in; some copy is still template text — see
 the launch checklist below.
 
 ## ⚠️ Launch checklist — real vs. placeholder
@@ -15,17 +15,21 @@ and the "excellent care and personal attention" promise quoted in the About sect
 
 Still placeholder / assumed — fix in `data/site-config.ts` before going live:
 
-- **Hours** — Google confirms only "Closes 6 PM." The Mon–Fri 08:00 opening and the
-  weekend "Closed" are assumptions. Also sync `components/json-ld.tsx`.
+- **Hours** — confirmed with the clinic (Mon–Fri 10:00–18:00, Sat 10:00–15:00, Sun closed).
+  If they change, edit `business.hours` and sync `components/json-ld.tsx`.
 - **Domain** (`seo.siteUrl`, still a placeholder) — the site URL drives
   the canonical tag, sitemap.xml, robots.txt, and Open Graph URLs.
+- **Analytics token** — once the domain exists, add it as a site in Cloudflare Web Analytics
+  and put the snippet's token in `.env.local` as `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` (see
+  "Analytics" below). Until then no analytics script is rendered.
 - **Footer credit link** — set `credits.href` in `data/site-config.ts` once the agency site
   has a URL; until then the credit renders as plain text.
 - **Testimonials** — fictional samples. Replace with real, consented patient reviews or
   remove the section from `app/page.tsx`. Never ship invented reviews for a real clinic.
 - **Trust line** — "5.0 ★ on Google" is true but currently rests on a single review;
   consider whether to feature it yet.
-- **All photography** — placeholder images from picsum.photos, seeded per slot.
+- **Photography** — the before/after pairs, the about photo and the Instagram tiles are the
+  clinic's own; make sure written patient consent for web use is on file for every face shown.
 - **Services & about copy** — template positioning (digital smile design, veneers,
   aligners…). Confirm it matches what Dredent actually offers and edit freely.
 
@@ -187,19 +191,35 @@ Below the map, "Open in Google Maps" uses the listing's official share link and 
 directions" the Maps URLs API: both open Google only when clicked, on mobile in the native
 app, and for directions Google asks the visitor for their start point, so the site never
 touches their location. Both URLs live in `mapLinks` in `data/site-config.ts`.
+
+## Analytics
+
+Visitor statistics come from **Cloudflare Web Analytics** (`components/analytics.tsx`), chosen
+because it is free and cookieless: the beacon stores nothing in the browser and does not
+fingerprint visitors, so it runs without consent and is deliberately *not* part of the cookie
+banner. It is Cloudflare's own snippet rendered as a plain deferred `<script>` on every page
+(including the 404 page), so it is in the static HTML and works on any host. It renders
+nothing while `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` is empty. To enable it: Cloudflare dashboard →
+Web Analytics → Add a site → enter the domain → choose the manual JavaScript snippet → copy
+the `token` value into `.env.local`, rebuild. The token ends up in the page HTML by design,
+so it is not a secret. The privacy and cookie policies already describe the tool (aggregated
+statistics, Cloudflare, Inc. as processor, legitimate interest); if you ever switch to a
+cookie-based tool such as Google Analytics, it must move behind the consent banner and the
+policies must change.
+
 ## Cookie consent and legal pages
 
-The site itself sets no cookies — fonts, map tiles and everything else are self-hosted and
-there is no analytics. The one thing that *can* set cookies is the optional Curator.io
-Instagram feed, so consent is scoped to exactly that, and the banner only exists while
-`NEXT_PUBLIC_CURATOR_FEED_ID` is set:
+The site itself sets no cookies — fonts, map tiles, photos and everything else are
+self-hosted, and the analytics above is cookieless. The one thing that *can* set cookies is
+the optional Curator.io Instagram feed, so consent is scoped to exactly that, and the banner
+only exists while `curatorFeed.enabled` is true and `NEXT_PUBLIC_CURATOR_FEED_ID` is set:
 
 - `components/cookie-banner.tsx` asks once (state in `localStorage`, key
   `dredent-consent-v1`, re-asked after 12 months; store logic in `lib/consent.ts`).
   "Only necessary" is the site's default state; "Allow third-party content" unlocks the
   embeds. "Cookie settings" in the footer re-opens the banner.
 - `components/instagram-mosaic.tsx` loads the live Curator.io feed only with consent and
-  falls back to the built-in placeholder mosaic otherwise. The map needs no gating — see
+  shows the static mosaic of the clinic's own posts otherwise. The map needs no gating — see
   "The contact section map" above.
 - Legal pages live at `/<locale>/terms/`, `/<locale>/privacy/` and `/<locale>/cookies/`
   (`app/[locale]/[legal]/page.tsx` + `components/legal-page.tsx`), with their copy in
