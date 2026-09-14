@@ -91,7 +91,14 @@ just be decoration pretending to be information.
 
 ## Getting started
 
+On Apple Silicon, use an **arm64** build of Node (`node -p process.arch` must print
+`arm64`). An Intel build running under Rosetta cannot load the native lightningcss,
+Tailwind and SWC binaries that an arm64 `npm install` puts in `node_modules`, and
+`next dev` fails with `Cannot find module ...lightningcss.darwin-x64.node`. `.nvmrc`
+pins a version known to be installed as arm64 on the team machine; `nvm use` picks it up.
+
 ```bash
+nvm use          # reads .nvmrc
 npm install
 npm run dev      # http://localhost:3000
 npm run build    # outputs a fully static site to /out
