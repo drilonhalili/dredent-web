@@ -45,7 +45,7 @@ export const mapLinks = {
 export const googleReviews: { rating: string; read: string; write: string } = {
   rating: "5.0",
   read: mapLinks.view,
-  write: "",
+  write: "https://g.page/r/CfQFUYD0LIxAEBM/review",
 };
 
 // The interactive map in the contact section is served entirely from this site

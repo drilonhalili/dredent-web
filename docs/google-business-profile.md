@@ -132,8 +132,10 @@ Single-language alternatives:
 
 ## 5. Review request (WhatsApp / SMS, the day after the visit)
 
-Get the short link from the profile's **Ask for reviews** button and paste it into
-`googleReviews.write` in `data/site-config.ts` too, so the website's "Write a review" button appears.
+The review link is **https://g.page/r/CfQFUYD0LIxAEBM/review** (from the profile's "Ask for reviews"
+button; note the zero and the capital I). It is set as `googleReviews.write` in `data/site-config.ts`, so
+the website's "Write a review" button uses it, and `docs/review-qr.png` / `.svg` is the same link as a QR
+code for the reception desk and appointment cards. Replace `{link}` below with it.
 
 **Shqip**
 
