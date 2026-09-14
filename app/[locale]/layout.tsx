@@ -5,7 +5,7 @@ import { CookieBanner } from "@/components/cookie-banner";
 import { I18nProvider } from "@/components/i18n-provider";
 import { ScrollBehavior } from "@/components/scroll-behavior";
 import { getDictionary } from "@/data/locales";
-import { business, curatorFeed, seo } from "@/data/site-config";
+import { business, curatorFeedActive, seo } from "@/data/site-config";
 import { defaultLocale, isLocale, localePath, locales, ogLocales } from "@/lib/i18n";
 import { ogImageFor } from "@/lib/seo";
 import "../globals.css";
@@ -90,7 +90,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <I18nProvider locale={locale} dictionary={t}>
           {children}
           {/* The only third-party embed is the Instagram feed, so the banner exists only when it is enabled. */}
-          {curatorFeed.feedId && <CookieBanner />}
+          {curatorFeedActive && <CookieBanner />}
         </I18nProvider>
         <ScrollBehavior />
       </body>

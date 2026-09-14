@@ -3,7 +3,7 @@ import { Link2, MapPin, Phone } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { CookieSettingsButton } from "@/components/cookie-settings-button";
 import type { Dictionary } from "@/data/locales";
-import { business, credits, curatorFeed, nav, services } from "@/data/site-config";
+import { business, credits, curatorFeedActive, nav, services } from "@/data/site-config";
 import { fill, localePath, type Locale } from "@/lib/i18n";
 
 const LEGAL_LINKS = ["privacy", "terms", "cookies"] as const;
@@ -109,7 +109,7 @@ export function Footer({ t, locale }: { t: Dictionary; locale: Locale }) {
                 {t.legal[slug].title}
               </Link>
             ))}
-            {curatorFeed.feedId && (
+            {curatorFeedActive && (
               <CookieSettingsButton className="cursor-pointer transition-colors hover:text-shade">
                 {t.consent.settings}
               </CookieSettingsButton>

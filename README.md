@@ -110,25 +110,36 @@ address, phone, hours, services, before/after case data, testimonials, FAQ, and 
 Instagram tile list. Swap that file and the whole site updates — you shouldn't need to
 touch component code for a copy or contact-info change.
 
-Images are placeholder photography from `picsum.photos`, seeded per slot (see
-`lib/utils.ts` → `placeholderImage`). Replace the `seed` values in `site-config.ts` with
-real photo paths once you have them (drop files in `/public` and swap the `<img src>` in
-the relevant component, or point at your Cloudinary account — you're already set up for
-that from other projects).
+Photos live under `public/` and are generated from the untouched originals in
+`assets-src/` by the scripts in `scripts/` (`align-results.mjs` for the before/after pairs,
+`build-instagram-tiles.mjs` for the Instagram tiles); edit the originals or the scripts, never
+the generated files. `placeholderImage` in `lib/utils.ts` is only the fallback for a missing
+before/after photo.
 
-## Going live with Instagram
+## The Instagram section
 
-The mosaic is wired for **Curator.io** (Mosaic template —
-https://curator.io/templates/mosaic) but ships rendering static placeholder tiles
-until a feed id is configured. To go live:
+By default the mosaic shows ten of the clinic's own recent posts, each tile linking to the
+post on Instagram. The originals are kept in `assets-src/instagram/<shortcode>.jpg`
+(Instagram's image URLs expire, so they cannot be referenced directly);
+`scripts/build-instagram-tiles.mjs` turns them into the 900x600 WebP tiles in
+`public/instagram/`, and `instagramPosts` in `data/site-config.ts` decides which are shown,
+which two are `big`, and which is a reel. Captions (also the alt text) are in each dictionary
+under `instagram.captions`. To refresh: save the new post images under their shortcodes, run
+the script, update the list and captions. No third-party request is involved, so the section
+needs no cookie consent.
+
+The live **Curator.io** feed (Mosaic template — https://curator.io/templates/mosaic) is
+still wired in behind `curatorFeed.enabled` (off). Connecting it requires logging in to the
+clinic's Instagram account, which is why it is parked. To go live:
 
 1. Create a Curator.io feed with the Mosaic template and connect the clinic's
    Instagram account.
 2. Publish the feed and copy the feed id from the embed script URL
    (`https://cdn.curator.io/published/<FEED_ID>.js`).
-3. Copy `.env.example` to `.env.local`, set `NEXT_PUBLIC_CURATOR_FEED_ID`, and
-   rebuild. While the id is empty, the placeholder mosaic from `instagramPosts`
-   in `data/site-config.ts` keeps rendering instead.
+3. Copy `.env.example` to `.env.local`, set `NEXT_PUBLIC_CURATOR_FEED_ID`, set
+   `enabled: true` on `curatorFeed` in `data/site-config.ts`, and rebuild. The cookie banner
+   and the footer's cookie-settings button appear automatically, since the feed loads
+   Curator/Instagram scripts.
 
 Alternative if you outgrow the hosted widget: fetch posts server-side with the
 Instagram Graph API at build time (never expose a long-lived token client-side)
