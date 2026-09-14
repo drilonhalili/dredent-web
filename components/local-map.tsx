@@ -9,7 +9,7 @@ import {
   removeProtocol,
   setWorkerUrl,
 } from "maplibre-gl";
-import { Protocol } from "pmtiles";
+import { PMTiles, Protocol, type RangeResponse, type Source } from "pmtiles";
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useI18n } from "@/components/i18n-provider";
@@ -17,6 +17,25 @@ import { business, mapArea } from "@/data/site-config";
 
 // Marker: lucide "map-pin" in the brand colours, tip at the bottom centre.
 const PIN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1f4a43" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 2px 4px rgba(18,33,29,.35))"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" fill="#f3f5f1"/><circle cx="12" cy="10" r="3" fill="#1f4a43"/></svg>`;
+
+// The pmtiles reader normally fetches byte ranges of the archive, but static hosts such
+// as Cloudflare Workers assets ignore the Range header and return the whole file with a
+// 200, which makes the reader give up. The archive is under 1 MB, so it is downloaded
+// once (cached by the browser and the CDN) and tile lookups are served from memory.
+class BufferSource implements Source {
+  constructor(
+    private readonly key: string,
+    private readonly buffer: ArrayBuffer,
+  ) {}
+
+  getKey() {
+    return this.key;
+  }
+
+  async getBytes(offset: number, length: number): Promise<RangeResponse> {
+    return { data: this.buffer.slice(offset, offset + length) };
+  }
+}
 
 // Interactive map served entirely from this origin — vector tiles
 // (public/map/tetovo.pmtiles), glyphs and sprites under public/map/ — so no request
@@ -35,61 +54,78 @@ export default function LocalMap() {
     // resolve for it; without this the map renders only its background colour.
     // The file is copied from node_modules by scripts/copy-maplibre-worker.mjs.
     setWorkerUrl(`${origin}/map/vendor/maplibre-gl-worker.js`);
+    const archiveUrl = `${origin}/map/tetovo.pmtiles`;
     const protocol = new Protocol();
     addProtocol("pmtiles", protocol.tile);
     const [west, south, east, north] = mapArea.bounds;
     const pad = 0.01;
+    let cancelled = false;
+    let map: MapLibreMap | undefined;
 
-    const map = new MapLibreMap({
-      container: el,
-      style: {
-        version: 8,
-        glyphs: `${origin}/map/fonts/{fontstack}/{range}.pbf`,
-        sprite: `${origin}/map/sprites/light`,
-        sources: {
-          protomaps: {
-            type: "vector",
-            url: `pmtiles://${origin}/map/tetovo.pmtiles`,
-            attribution:
-              '<a href="https://github.com/protomaps/basemaps" target="_blank" rel="noopener noreferrer">Protomaps</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
+    const mount = (archive: ArrayBuffer) => {
+      protocol.add(new PMTiles(new BufferSource(archiveUrl, archive)));
+      map = new MapLibreMap({
+        container: el,
+        style: {
+          version: 8,
+          glyphs: `${origin}/map/fonts/{fontstack}/{range}.pbf`,
+          sprite: `${origin}/map/sprites/light`,
+          sources: {
+            protomaps: {
+              type: "vector",
+              url: `pmtiles://${archiveUrl}`,
+              attribution:
+                '<a href="https://github.com/protomaps/basemaps" target="_blank" rel="noopener noreferrer">Protomaps</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
+            },
           },
+          layers: layers("protomaps", namedFlavor("light"), { lang: locale }),
         },
-        layers: layers("protomaps", namedFlavor("light"), { lang: locale }),
-      },
-      center: [business.geo.lng, business.geo.lat],
-      zoom: mapArea.initialZoom,
-      minZoom: mapArea.minZoom,
-      maxZoom: mapArea.maxZoom,
-      maxBounds: [
-        [west - pad, south - pad],
-        [east + pad, north + pad],
-      ],
-      cooperativeGestures: true,
-      attributionControl: { compact: false },
-      locale: {
-        "NavigationControl.ZoomIn": t.map.zoomIn,
-        "NavigationControl.ZoomOut": t.map.zoomOut,
-        "CooperativeGesturesHandler.WindowsHelpText": t.map.gestureWindows,
-        "CooperativeGesturesHandler.MacHelpText": t.map.gestureMac,
-        "CooperativeGesturesHandler.MobileHelpText": t.map.gestureTouch,
-      },
-    });
-    map.on("error", (e) => console.error("[map]", e.error ?? e));
-    if (process.env.NODE_ENV !== "production") {
-      // Debug handle for the dev tools; stripped from production bundles.
-      (window as unknown as { __dredentMap?: unknown }).__dredentMap = map;
-    }
-    map.addControl(new NavigationControl({ showCompass: false }), "top-right");
+        center: [business.geo.lng, business.geo.lat],
+        zoom: mapArea.initialZoom,
+        minZoom: mapArea.minZoom,
+        maxZoom: mapArea.maxZoom,
+        maxBounds: [
+          [west - pad, south - pad],
+          [east + pad, north + pad],
+        ],
+        cooperativeGestures: true,
+        attributionControl: { compact: false },
+        locale: {
+          "NavigationControl.ZoomIn": t.map.zoomIn,
+          "NavigationControl.ZoomOut": t.map.zoomOut,
+          "CooperativeGesturesHandler.WindowsHelpText": t.map.gestureWindows,
+          "CooperativeGesturesHandler.MacHelpText": t.map.gestureMac,
+          "CooperativeGesturesHandler.MobileHelpText": t.map.gestureTouch,
+        },
+      });
+      map.on("error", (e) => console.error("[map]", e.error ?? e));
+      if (process.env.NODE_ENV !== "production") {
+        // Debug handle for the dev tools; stripped from production bundles.
+        (window as unknown as { __dredentMap?: unknown }).__dredentMap = map;
+      }
+      map.addControl(new NavigationControl({ showCompass: false }), "top-right");
 
-    const pin = document.createElement("div");
-    pin.innerHTML = PIN_SVG;
-    pin.setAttribute("aria-hidden", "true");
-    new Marker({ element: pin, anchor: "bottom" })
-      .setLngLat([business.geo.lng, business.geo.lat])
-      .addTo(map);
+      const pin = document.createElement("div");
+      pin.innerHTML = PIN_SVG;
+      pin.setAttribute("aria-hidden", "true");
+      new Marker({ element: pin, anchor: "bottom" })
+        .setLngLat([business.geo.lng, business.geo.lat])
+        .addTo(map);
+    };
+
+    fetch(archiveUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error(`${archiveUrl}: HTTP ${response.status}`);
+        return response.arrayBuffer();
+      })
+      .then((archive) => {
+        if (!cancelled) mount(archive);
+      })
+      .catch((error: unknown) => console.error("[map]", error));
 
     return () => {
-      map.remove();
+      cancelled = true;
+      map?.remove();
       removeProtocol("pmtiles");
     };
   }, [locale, t]);
