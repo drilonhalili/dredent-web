@@ -30,7 +30,7 @@ export const sq: Dictionary = {
     about: "Rreth nesh",
     services: "Shërbimet",
     transformations: "Transformimet",
-    stories: "Histori",
+    stories: "Vlerësime",
     faq: "Pyetje",
     contact: "Kontakt",
   },
@@ -140,28 +140,12 @@ export const sq: Dictionary = {
   },
   // ⚠️ PËRMBAJTJE SHEMBULL — citate fiktive, JO pacientë realë të Dredent (shih en.ts).
   testimonials: {
-    eyebrow: "Histori pacientësh",
-    title: "Me fjalët e tyre",
-    items: [
-      {
-        quote:
-          "Ma treguan pamjen digjitale para se të preknin ndonjë gjë, kështu që në takimin e fundit s'kishte asnjë surprizë. Vetëm kjo ia vlejti.",
-        name: "L. Ivanova",
-        context: "Faseta porcelani, 2025",
-      },
-      {
-        quote:
-          "E shtyva dy vjet për një dhëmb të përparmë të çiprur, nga nervozizmi. E gjithë vizita qe më e qetë se ç'ka të drejtë të jetë një vizitë te dentisti.",
-        name: "M. Petrovski",
-        context: "Bonding kompozit, 2026",
-      },
-      {
-        quote:
-          "Plan i qartë trajtimi, afat i ndershëm, dhe aparatet e mia përfunduan në fakt një javë para kohe.",
-        name: "D. Kostova",
-        context: "Aparate të padukshme, 2025",
-      },
-    ],
+    eyebrow: "Vlerësime nga pacientët",
+    title: "Çfarë thonë pacientët në Google",
+    ratingLabel: "Vlerësimi në Google",
+    body: "Çdo vlerësim në profilin tonë në Google është shkruar nga një pacient i vërtetë pas vizitës — ne nuk publikojmë dëshmi tonat. Lexojini atje dhe, nëse keni qenë te ne, disa fjalë të sinqerta e ndihmojnë tjetrin të vendosë.",
+    readCta: "Lexoni vlerësimet në Google",
+    writeCta: "Shkruani një vlerësim",
   },
   faq: {
     eyebrow: "Pyetje",

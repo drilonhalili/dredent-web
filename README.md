@@ -24,8 +24,11 @@ Still placeholder / assumed — fix in `data/site-config.ts` before going live:
   "Analytics" below). Until then no analytics script is rendered.
 - **Footer credit link** — set `credits.href` in `data/site-config.ts` once the agency site
   has a URL; until then the credit renders as plain text.
-- **Testimonials** — fictional samples. Replace with real, consented patient reviews or
-  remove the section from `app/page.tsx`. Never ship invented reviews for a real clinic.
+- **Reviews** — the "Reviews" section links to the Google listing instead of quoting anyone.
+  Paste the profile's "Ask for reviews" short link into `googleReviews.write` in
+  `data/site-config.ts` so the "Write a review" button appears, and keep `googleReviews.rating`
+  in step with the profile. `docs/google-business-profile.md` has paste-ready content for the
+  profile itself (description, services, Q&A, review request, posts).
 - **Trust line** — "5.0 ★ on Google" is true but currently rests on a single review;
   consider whether to feature it yet.
 - **Photography** — the before/after pairs, the about photo and the Instagram tiles are the

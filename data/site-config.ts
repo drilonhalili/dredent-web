@@ -37,6 +37,17 @@ export const mapLinks = {
   directions: `https://www.google.com/maps/dir/?api=1&destination=${business.mapQuery}`,
 } as const;
 
+// Google reviews (components/testimonials.tsx). `read` opens the listing, where the reviews
+// are shown; `write` is the short "Ask for reviews" link from the Business Profile
+// (https://g.page/r/…/review). Leave `write` empty until the clinic copies it from
+// Google — the "Write a review" button is hidden while it is. `rating` mirrors the
+// profile; update it if the average changes.
+export const googleReviews: { rating: string; read: string; write: string } = {
+  rating: "5.0",
+  read: mapLinks.view,
+  write: "",
+};
+
 // The interactive map in the contact section is served entirely from this site
 // (components/local-map.tsx): vector tiles for this area live in
 // public/map/tetovo.pmtiles, cut from a Protomaps/OpenStreetMap build by

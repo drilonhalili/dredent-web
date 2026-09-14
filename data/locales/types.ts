@@ -80,7 +80,10 @@ export type Dictionary = {
   testimonials: {
     eyebrow: string;
     title: string;
-    items: readonly { quote: string; name: string; context: string }[];
+    ratingLabel: string;
+    body: string;
+    readCta: string;
+    writeCta: string;
   };
   faq: {
     eyebrow: string;

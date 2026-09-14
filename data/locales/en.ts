@@ -32,7 +32,7 @@ export const en: Dictionary = {
     about: "About",
     services: "Services",
     transformations: "Transformations",
-    stories: "Stories",
+    stories: "Reviews",
     faq: "FAQ",
     contact: "Contact",
   },
@@ -146,28 +146,12 @@ export const en: Dictionary = {
   // before launch, or remove the <Testimonials /> section from app/[locale]/page.tsx.
   // Publishing invented testimonials for a real clinic is misleading advertising.
   testimonials: {
-    eyebrow: "Patient stories",
-    title: "Told in their own words",
-    items: [
-      {
-        quote:
-          "They showed me the digital preview before touching anything, so there were no surprises at the reveal appointment. That alone was worth it.",
-        name: "L. Ivanova",
-        context: "Porcelain veneers, 2025",
-      },
-      {
-        quote:
-          "I'd put off a chipped front tooth for two years out of nerves. The whole visit was calmer than a dentist has any right to be.",
-        name: "M. Petrovski",
-        context: "Composite bonding, 2026",
-      },
-      {
-        quote:
-          "Clear treatment plan, honest timeline, and my aligners actually finished a week ahead of schedule.",
-        name: "D. Kostova",
-        context: "Invisible aligners, 2025",
-      },
-    ],
+    eyebrow: "Patient reviews",
+    title: "What patients say on Google",
+    ratingLabel: "Google rating",
+    body: "Every review on our Google profile is written by a real patient after a visit — we don't publish testimonials of our own. Read them there, and if you have been to see us, a few honest words help the next person decide.",
+    readCta: "Read our Google reviews",
+    writeCta: "Write a review",
   },
   faq: {
     eyebrow: "Questions",
