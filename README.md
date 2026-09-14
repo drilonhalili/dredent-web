@@ -275,11 +275,13 @@ testing on a preview URL. A starting point:
 
 ## A few deliberate follow-ups, not done here
 
-- **Before launch (SEO)**: replace `seo.siteUrl` in `data/site-config.ts` with the real
-  domain (canonical, hreflang, sitemap, robots, Open Graph and JSON-LD are all derived from
-  it); add the Google Search Console verification token to `generateMetadata` in
-  `app/[locale]/layout.tsx` (`verification.google`) and submit `/sitemap.xml`; link the
-  Google Business Profile listing; add a real `twitter.site` handle if the clinic has one.
+- **Search presence (done 14 Sep 2026)**: Search Console has a verified Domain property for
+  `dredent.com` (DNS TXT record in Cloudflare — do not delete it) with `/sitemap.xml`
+  submitted; the Business Profile links to the site, has the appointment link
+  `https://dredent.com/sq/#contact`, the corrected address and Instagram handle, the
+  "Cosmetic dentist" category and eight custom services (all pending Google's review).
+  Still open there: reviews, photos, posts, Q&A (see `docs/google-business-profile.md`).
+  Add a real `twitter.site` handle if the clinic ever has one.
 - **Font subsetting**: the three self-hosted fonts are full variable/static files
   (~1.9 MB total). `pyftsubset` or `glyphhanger` can trim this substantially once you know
   the final character set — Latin for `sq`/`en`; the `mk` pages need a Cyrillic-capable
