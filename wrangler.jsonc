@@ -1,0 +1,15 @@
+{
+  // Cloudflare Workers with static assets: serves the Next.js static export in out/.
+  // Cloudflare's Git integration runs `npm run build` and then `npx wrangler deploy`
+  // (see README → Deployment). out/_redirects and out/_headers are honoured.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dredent-web",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./out",
+    // /sq -> /sq/ and /sq/ -> out/sq/index.html, matching Next's trailingSlash: true.
+    "html_handling": "auto-trailing-slash",
+    // Unknown URLs get out/404.html (app/global-not-found.tsx) with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

@@ -233,21 +233,28 @@ only exists while `curatorFeed.enabled` is true and `NEXT_PUBLIC_CURATOR_FEED_ID
 If you later want a hosted CMP (OneTrust CookiePro, Cookiebot…), replace the banner and
 have `lib/consent.ts` read that vendor's consent state instead; the gating stays the same.
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare Workers, static assets)
 
-The domain is registered at Cloudflare, so the site is hosted on **Cloudflare Pages** (free,
-global CDN, no commercial-use restriction) from the GitHub repo:
+The domain is registered at Cloudflare, so the site is hosted there too: a **Worker with
+static assets** named `dredent-web` (free plan, global CDN, no commercial-use restriction),
+built by Cloudflare's Git integration from the GitHub repo. `wrangler.jsonc` describes it:
+no server code, just the `out/` directory as assets, trailing-slash HTML handling and
+`out/404.html` for unknown URLs.
 
-1. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → this repo.
-2. Build settings: framework preset **Next.js (Static HTML Export)**, build command
-   `npm run build`, output directory `out`. Environment variables (Production *and* Preview):
-   `NODE_VERSION` = `24`, `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` = the Web Analytics token.
-3. After the first deploy: project → Custom domains → add `dredent.com`, then `www.dredent.com`.
-   Cloudflare creates the DNS records itself because the zone is in the same account.
-4. `public/_redirects` (copied into `out/`) sends `www` to the apex domain and `/` to `/sq/`
+1. Dashboard → Workers & Pages → `dredent-web` → Settings → Builds: build command
+   `npm run build`, deploy command `npx wrangler deploy`, root directory `/`, production
+   branch `main`. Node version comes from `.nvmrc`. Build variables: `NEXT_PUBLIC_CF_ANALYTICS_TOKEN`
+   = the Web Analytics token (build-time, inlined into the HTML).
+2. `dredent-web` → Settings → Domains & Routes → add custom domains `dredent.com` and
+   `www.dredent.com`. Cloudflare creates the DNS records itself because the zone is in the
+   same account. Leave the `workers.dev` subdomain disabled so the site has one canonical host.
+3. `public/_redirects` (copied into `out/`) sends `www` to the apex domain and `/` to `/sq/`
    with real 301s; `public/_headers` adds the security headers and long cache lifetimes for
-   hashed assets. Both are Cloudflare Pages conventions; other hosts need their own equivalent.
-5. Every push to `main` deploys; every pull request gets a `*.pages.dev` preview URL.
+   hashed assets. Both are Cloudflare conventions (Pages and Workers assets); other hosts need
+   their own equivalent.
+4. Every push to `main` builds and deploys; other branches get preview builds. `npx wrangler
+   deploy` from a laptop also works after `npx wrangler login`, but the Git integration is the
+   intended path so every deploy is traceable to a commit.
 
 DNS hygiene for a domain that sends no email (the clinic uses Gmail): in the zone add
 `MX @ 0 .` (null MX), `TXT @ "v=spf1 -all"` and `TXT _dmarc "v=DMARC1; p=reject;"`, so
