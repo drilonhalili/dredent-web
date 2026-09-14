@@ -248,10 +248,12 @@ no server code, just the `out/` directory as assets, trailing-slash HTML handlin
 2. `dredent-web` → Settings → Domains & Routes → add custom domains `dredent.com` and
    `www.dredent.com`. Cloudflare creates the DNS records itself because the zone is in the
    same account. Leave the `workers.dev` subdomain disabled so the site has one canonical host.
-3. `public/_redirects` (copied into `out/`) sends `www` to the apex domain and `/` to `/sq/`
-   with real 301s; `public/_headers` adds the security headers and long cache lifetimes for
-   hashed assets. Both are Cloudflare conventions (Pages and Workers assets); other hosts need
-   their own equivalent.
+3. `public/_redirects` (copied into `out/`) sends `/` to `/sq/` with a real 301, and
+   `public/_headers` adds the security headers and long cache lifetimes for hashed assets. Both
+   are Cloudflare conventions (Pages and Workers assets); other hosts need their own equivalent.
+   `www` → apex is a zone-level **Redirect Rule** (dashboard → dredent.com → Rules → template
+   "Redirect from WWW to Root"), because the Workers `_redirects` file only accepts relative
+   sources.
 4. Every push to `main` builds and deploys; other branches get preview builds. `npx wrangler
    deploy` from a laptop also works after `npx wrangler login`, but the Git integration is the
    intended path so every deploy is traceable to a commit.
