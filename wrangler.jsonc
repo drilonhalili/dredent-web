@@ -5,6 +5,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dredent-web",
   "compatibility_date": "2026-09-01",
+  // One canonical host: no public workers.dev URL for production (preview URLs for
+  // non-production branches stay on).
+  "workers_dev": false,
   "assets": {
     "directory": "./out",
     // /sq -> /sq/ and /sq/ -> out/sq/index.html, matching Next's trailingSlash: true.

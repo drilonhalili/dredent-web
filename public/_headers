@@ -6,10 +6,11 @@
   Cross-Origin-Opener-Policy: same-origin
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
-/map/vendor/*
-  Cache-Control: public, max-age=31536000, immutable
 /map/*
   Cache-Control: public, max-age=604800
+/map/vendor/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable
 /results/*
   Cache-Control: public, max-age=604800
 /instagram/*
