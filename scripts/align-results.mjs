@@ -1,6 +1,6 @@
 // Re-crops each before/after pair in assets-src/results-original/ so the teeth
 // land at the same position and scale in the compare slider, then writes the
-// 1200x800 results into public/results/ (JPG for cases 01-05, WebP for 06-08).
+// 1200x800 results into public/results/ as WebP.
 //
 // The anchor box for every photo is hand-measured in align-results.overrides.json:
 // canine-to-canine (or central-incisor) width, gumline to incisal edge of the
@@ -27,7 +27,8 @@ const CASES = ["01", "02", "03", "04", "05", "06", "07", "08"];
 const ASPECT = 3 / 2;
 const OUT_W = 1200;
 const OUT_H = 800;
-const extFor = (c) => (Number(c) >= 6 ? "webp" : "jpg");
+const srcExtFor = (c) => (Number(c) >= 6 ? "webp" : "jpg"); // originals
+const OUT_EXT = "webp";
 const mode = process.argv[2] ?? "preview";
 
 const anchors = JSON.parse(await fs.readFile(OVERRIDES, "utf8"));
@@ -73,7 +74,7 @@ const previewDir = path.join(os.tmpdir(), "dredent-align-preview");
 if (mode === "preview") await fs.mkdir(previewDir, { recursive: true });
 
 for (const c of CASES) {
-  const ext = extFor(c);
+  const ext = srcExtFor(c);
   const sides = {};
   for (const side of ["before", "after"]) {
     const key = `case-${c}-${side}`;
@@ -88,11 +89,11 @@ for (const c of CASES) {
   for (const side of ["before", "after"]) {
     const { file, meta, t } = sides[side];
     const img = sharp(file).extract(cropFor(meta, t, k)).resize(OUT_W, OUT_H, { kernel: "lanczos3" });
-    out[side] = ext === "webp" ? img.webp({ quality: 82 }) : img.jpeg({ quality: 86, mozjpeg: true });
+    out[side] = img.webp({ quality: 82 });
   }
 
   if (mode === "apply") {
-    for (const side of ["before", "after"]) await out[side].toFile(path.join(OUT, `case-${c}-${side}.${ext}`));
+    for (const side of ["before", "after"]) await out[side].toFile(path.join(OUT, `case-${c}-${side}.${OUT_EXT}`));
     console.log(`case-${c}: written (k=${k.toFixed(2)})`);
   } else {
     const [b, a] = await Promise.all([out.before.toBuffer(), out.after.toBuffer()]);

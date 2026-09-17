@@ -34,3 +34,6 @@ next-env.d.ts
 
 # Cloudflare Wrangler
 /.wrangler/
+
+# Font subsetting toolchain (scripts/build-fonts.sh)
+/.venv-fonts/

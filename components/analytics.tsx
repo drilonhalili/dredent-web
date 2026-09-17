@@ -12,10 +12,13 @@ import { analytics } from "@/data/site-config";
 export function Analytics() {
   if (!analytics.cloudflareToken) return null;
   return (
-    <script
-      defer
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      data-cf-beacon={JSON.stringify({ token: analytics.cloudflareToken })}
-    />
+    <>
+      <link rel="preconnect" href="https://static.cloudflareinsights.com" />
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={JSON.stringify({ token: analytics.cloudflareToken })}
+      />
+    </>
   );
 }

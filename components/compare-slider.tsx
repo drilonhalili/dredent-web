@@ -141,6 +141,10 @@ export function CompareSlider({
         src={afterUrl}
         alt={afterAlt}
         draggable={false}
+        width={1200}
+        height={800}
+        loading="lazy"
+        decoding="async"
         onError={() => afterFallbackSrc && setAfterUrl(afterFallbackSrc)}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
       />
@@ -156,6 +160,10 @@ export function CompareSlider({
           src={beforeUrl}
           alt={beforeAlt}
           draggable={false}
+          width={1200}
+          height={800}
+          loading="lazy"
+          decoding="async"
           onError={() => beforeFallbackSrc && setBeforeUrl(beforeFallbackSrc)}
           className="h-full w-full object-cover"
         />

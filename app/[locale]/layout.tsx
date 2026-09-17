@@ -82,6 +82,11 @@ export default async function LocaleLayout({ children, params }: Props) {
       className={fontClassName}
     >
       <body>
+        {/* Scroll-reveal animations (framer-motion) render their targets at opacity 0 on the
+            server; without JavaScript they would never appear. */}
+        <noscript>
+          <style>{`[style*="opacity"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <a
           href="#main"
           className="fixed left-2 top-2 z-[100] -translate-y-16 rounded bg-cusp px-4 py-2 font-medium text-porcelain transition-transform focus-visible:translate-y-0"

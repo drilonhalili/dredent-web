@@ -28,7 +28,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ loc
       ? [
           {
             name: "Plex Mono",
-            data: await readFile(join(process.cwd(), "app/fonts/IBMPlexMono-SemiBold.ttf")),
+            data: await readFile(join(process.cwd(), "assets-src/fonts/IBMPlexMono-SemiBold.ttf")),
             weight: 600 as const,
             style: "normal" as const,
           },

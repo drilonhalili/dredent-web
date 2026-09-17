@@ -119,11 +119,11 @@ export type ServiceId = (typeof services)[number]["id"];
 // (`gallery.cases`) — they are written from what the photos show, not from the
 // clinic's records.
 export const comparePairs = [
-  { id: "case-01", beforeSrc: "/results/case-01-before.jpg", afterSrc: "/results/case-01-after.jpg" },
-  { id: "case-02", beforeSrc: "/results/case-02-before.jpg", afterSrc: "/results/case-02-after.jpg" },
-  { id: "case-03", beforeSrc: "/results/case-03-before.jpg", afterSrc: "/results/case-03-after.jpg" },
-  { id: "case-04", beforeSrc: "/results/case-04-before.jpg", afterSrc: "/results/case-04-after.jpg" },
-  { id: "case-05", beforeSrc: "/results/case-05-before.jpg", afterSrc: "/results/case-05-after.jpg" },
+  { id: "case-01", beforeSrc: "/results/case-01-before.webp", afterSrc: "/results/case-01-after.webp" },
+  { id: "case-02", beforeSrc: "/results/case-02-before.webp", afterSrc: "/results/case-02-after.webp" },
+  { id: "case-03", beforeSrc: "/results/case-03-before.webp", afterSrc: "/results/case-03-after.webp" },
+  { id: "case-04", beforeSrc: "/results/case-04-before.webp", afterSrc: "/results/case-04-after.webp" },
+  { id: "case-05", beforeSrc: "/results/case-05-before.webp", afterSrc: "/results/case-05-after.webp" },
   { id: "case-06", beforeSrc: "/results/case-06-before.webp", afterSrc: "/results/case-06-after.webp" },
   { id: "case-07", beforeSrc: "/results/case-07-before.webp", afterSrc: "/results/case-07-after.webp" },
   { id: "case-08", beforeSrc: "/results/case-08-before.webp", afterSrc: "/results/case-08-after.webp" },

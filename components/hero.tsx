@@ -83,7 +83,7 @@ export function Hero() {
           aria-hidden="true"
         >
           <HeroScene />
-          <p className="pointer-events-none absolute bottom-1 right-2 font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft/50">
+          <p className="pointer-events-none absolute bottom-1 right-2 font-mono text-[0.6rem] uppercase tracking-wider text-ink-soft/80">
             {t.hero.tapHint}
           </p>
         </motion.div>

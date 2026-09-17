@@ -282,10 +282,12 @@ testing on a preview URL. A starting point:
   "Cosmetic dentist" category and eight custom services (all pending Google's review).
   Still open there: reviews, photos, posts, Q&A (see `docs/google-business-profile.md`).
   Add a real `twitter.site` handle if the clinic ever has one.
-- **Font subsetting**: the three self-hosted fonts are full variable/static files
-  (~1.9 MB total). `pyftsubset` or `glyphhanger` can trim this substantially once you know
-  the final character set — Latin for `sq`/`en`; the `mk` pages need a Cyrillic-capable
-  family, see "Languages" above.
+- **Fonts (done 17 Sep 2026)**: `scripts/build-fonts.sh` turns the TTF originals in
+  `assets-src/fonts/` into the WOFF2 subsets in `app/fonts/` — Latin + Latin Extended for all
+  faces, Cyrillic only in Plex Mono, weights 400–600, Fraunces' SOFT/WONK axes pinned to their
+  defaults — 352 KB per page instead of 1 MB. Re-run it after changing a font or adding a
+  language (it creates a Python venv in `.venv-fonts/` on first run). `mk` pages still fall
+  back to system fonts for Cyrillic display text, see "Languages" above.
 - **Real photography**: the Transformations section is wired for five real before/after
   cases (`comparePairs` in `data/site-config.ts`). Run `bash scripts/fetch-results.sh`
   once to download the photos into `public/results/` (the source links expire —
