@@ -1,6 +1,7 @@
 // Re-crops each before/after pair in assets-src/results-original/ so the teeth
 // land at the same position and scale in the compare slider, then writes the
-// 1200x800 results into public/results/ as WebP.
+// 1200x800 results (plus 600x400 "-600" variants for srcset) into public/results/ as WebP
+// and AVIF (components/compare-slider.tsx uses <picture> with the AVIF first).
 //
 // The anchor box for every photo is hand-measured in align-results.overrides.json:
 // canine-to-canine (or central-incisor) width, gumline to incisal edge of the
@@ -27,6 +28,9 @@ const CASES = ["01", "02", "03", "04", "05", "06", "07", "08"];
 const ASPECT = 3 / 2;
 const OUT_W = 1200;
 const OUT_H = 800;
+// Smaller variant for the srcset (phones and the 2-column grid at narrow widths).
+const SMALL_W = 600;
+const SMALL_H = 400;
 const srcExtFor = (c) => (Number(c) >= 6 ? "webp" : "jpg"); // originals
 const OUT_EXT = "webp";
 const mode = process.argv[2] ?? "preview";
@@ -88,12 +92,22 @@ for (const c of CASES) {
   const out = {};
   for (const side of ["before", "after"]) {
     const { file, meta, t } = sides[side];
-    const img = sharp(file).extract(cropFor(meta, t, k)).resize(OUT_W, OUT_H, { kernel: "lanczos3" });
-    out[side] = img.webp({ quality: 82 });
+    const crop = cropFor(meta, t, k);
+    const large = () => sharp(file).extract(crop).resize(OUT_W, OUT_H, { kernel: "lanczos3" });
+    const small = () => sharp(file).extract(crop).resize(SMALL_W, SMALL_H, { kernel: "lanczos3" });
+    out[side] = large().webp({ quality: 82 });
+    out[`${side}Small`] = small().webp({ quality: 80 });
+    out[`${side}Avif`] = large().avif({ quality: 55 });
+    out[`${side}SmallAvif`] = small().avif({ quality: 52 });
   }
 
   if (mode === "apply") {
-    for (const side of ["before", "after"]) await out[side].toFile(path.join(OUT, `case-${c}-${side}.${OUT_EXT}`));
+    for (const side of ["before", "after"]) {
+      await out[side].toFile(path.join(OUT, `case-${c}-${side}.${OUT_EXT}`));
+      await out[`${side}Small`].toFile(path.join(OUT, `case-${c}-${side}-600.${OUT_EXT}`));
+      await out[`${side}Avif`].toFile(path.join(OUT, `case-${c}-${side}.avif`));
+      await out[`${side}SmallAvif`].toFile(path.join(OUT, `case-${c}-${side}-600.avif`));
+    }
     console.log(`case-${c}: written (k=${k.toFixed(2)})`);
   } else {
     const [b, a] = await Promise.all([out.before.toBuffer(), out.after.toBuffer()]);

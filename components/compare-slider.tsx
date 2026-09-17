@@ -10,6 +10,7 @@ import {
 } from "react";
 import { ChevronsLeftRight } from "lucide-react";
 import { useI18n } from "@/components/i18n-provider";
+import { avifSrc, resultSrcSet } from "@/data/site-config";
 import { fill } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +26,9 @@ type CompareSliderProps = {
   initialPosition?: number;
   className?: string;
 };
+
+// The gallery is one column on phones and two columns (max ~560px each) from md up.
+const SIZES = "(min-width: 768px) 560px, calc(100vw - 2rem)";
 
 /**
  * Drag-to-reveal before/after comparison, in the spirit of Aceternity UI's
@@ -135,10 +139,14 @@ export function CompareSlider({
       )}
     >
       {/* Base layer: "after" image, full bleed */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <picture>
+        {afterUrl === afterSrc && <source type="image/avif" srcSet={resultSrcSet(avifSrc(afterSrc))} sizes={SIZES} />}
+        { }
+        <img
         ref={afterImgRef}
         src={afterUrl}
+        srcSet={afterUrl === afterSrc ? resultSrcSet(afterSrc) : undefined}
+        sizes={SIZES}
         alt={afterAlt}
         draggable={false}
         width={1200}
@@ -148,16 +156,21 @@ export function CompareSlider({
         onError={() => afterFallbackSrc && setAfterUrl(afterFallbackSrc)}
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
       />
+      </picture>
 
       {/* Clipped layer: "before" image, revealed left-to-right up to the handle */}
       <div
         className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)`, transition: clipTransition }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <picture>
+          {beforeUrl === beforeSrc && <source type="image/avif" srcSet={resultSrcSet(avifSrc(beforeSrc))} sizes={SIZES} />}
+          { }
+          <img
           ref={beforeImgRef}
           src={beforeUrl}
+          srcSet={beforeUrl === beforeSrc ? resultSrcSet(beforeSrc) : undefined}
+          sizes={SIZES}
           alt={beforeAlt}
           draggable={false}
           width={1200}
@@ -167,6 +180,7 @@ export function CompareSlider({
           onError={() => beforeFallbackSrc && setBeforeUrl(beforeFallbackSrc)}
           className="h-full w-full object-cover"
         />
+        </picture>
       </div>
 
       <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-ink/70 px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-wider text-porcelain backdrop-blur-sm">

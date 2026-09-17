@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Plus } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -42,7 +42,7 @@ export function Faq() {
                 </button>
                 <AnimatePresence initial={false}>
                   {open && (
-                    <motion.div
+                    <m.div
                       id={`faq-panel-${i}`}
                       role="region"
                       initial={{ height: 0, opacity: 0 }}
@@ -52,7 +52,7 @@ export function Faq() {
                       className="overflow-hidden"
                     >
                       <p className="pb-6 leading-relaxed text-ink-soft">{faq.answer}</p>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>

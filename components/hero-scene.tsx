@@ -93,6 +93,8 @@ function useParticleData() {
       { sampler: new MeshSurfaceSampler(new Mesh(buildRoot(0.21, 0.13, 1.05))).build(), share: 0.13 },
       { sampler: new MeshSurfaceSampler(new Mesh(buildRoot(0, -0.21, 1.2))).build(), share: 0.18 },
     ];
+    const firstPart = parts[0];
+    if (!firstPart) throw new Error("hero scene: no surface samplers defined");
     const pickSampler = (i: number) => {
       const r = i / COUNT;
       let acc = 0;
@@ -100,7 +102,7 @@ function useParticleData() {
         acc += s.share;
         if (r < acc) return s.sampler;
       }
-      return parts[0].sampler;
+      return firstPart.sampler;
     };
     const targets = new Float32Array(COUNT * 3);
     const scatter = new Float32Array(COUNT * 3);
@@ -139,7 +141,7 @@ function useParticleData() {
       colors[i * 3 + 2] = tmp.b;
 
       // Assemble bottom-up (roots first), with a little randomness.
-      delays[i] = (1 - (targets[i * 3 + 1] / 2.6 + 0.5)) * 1.1 + Math.random() * 0.7;
+      delays[i] = (1 - ((targets[i * 3 + 1] ?? 0) / 2.6 + 0.5)) * 1.1 + Math.random() * 0.7;
       phases[i] = Math.random() * Math.PI * 2;
     }
     return { targets, scatter, colors, delays, phases };
@@ -172,14 +174,19 @@ function ToothParticles({
     const pos = points.current.geometry.getAttribute("position") as THREE.BufferAttribute;
     const arr = pos.array as Float32Array;
     for (let i = 0; i < COUNT; i++) {
-      let k = Math.min(1, Math.max(0, (t - delays[i]) * ASSEMBLE_SPEED));
+      let k = Math.min(1, Math.max(0, (t - (delays[i] ?? 0)) * ASSEMBLE_SPEED));
       k = 1 - (1 - k) ** 3; // ease-out cubic
       const ix = i * 3;
       const wobble = 0.016 * k;
-      arr[ix] = scatter[ix] + (targets[ix] - scatter[ix]) * k + Math.sin(t * 1.4 + phases[i]) * wobble;
-      arr[ix + 1] =
-        scatter[ix + 1] + (targets[ix + 1] - scatter[ix + 1]) * k + Math.cos(t * 1.1 + phases[i]) * wobble;
-      arr[ix + 2] = scatter[ix + 2] + (targets[ix + 2] - scatter[ix + 2]) * k + Math.sin(t * 1.7 + phases[i]) * wobble;
+      const phase = phases[i] ?? 0;
+      // Typed-array reads are `number | undefined` under noUncheckedIndexedAccess; the
+      // buffers are sized COUNT * 3, so the fallbacks never trigger.
+      const sx = scatter[ix] ?? 0;
+      const sy = scatter[ix + 1] ?? 0;
+      const sz = scatter[ix + 2] ?? 0;
+      arr[ix] = sx + ((targets[ix] ?? 0) - sx) * k + Math.sin(t * 1.4 + phase) * wobble;
+      arr[ix + 1] = sy + ((targets[ix + 1] ?? 0) - sy) * k + Math.cos(t * 1.1 + phase) * wobble;
+      arr[ix + 2] = sz + ((targets[ix + 2] ?? 0) - sz) * k + Math.sin(t * 1.7 + phase) * wobble;
     }
     pos.needsUpdate = true;
   });

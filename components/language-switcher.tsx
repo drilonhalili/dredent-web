@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/components/i18n-provider";
@@ -74,7 +74,7 @@ export function LanguageSwitcher({
     const current = items.indexOf(document.activeElement as HTMLAnchorElement);
     const next =
       current === -1 ? (offset === 1 ? 0 : items.length - 1) : (current + offset + items.length) % items.length;
-    items[next].focus();
+    items[next]?.focus();
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
@@ -109,7 +109,8 @@ export function LanguageSwitcher({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={open ? panelId : undefined}
-        aria-label={`${t.a11y.language}: ${localeNames[locale]}`}
+        // Includes the visible "SQ"/"EN"/"MK" so the accessible name contains the label (WCAG 2.5.3).
+        aria-label={`${t.a11y.language}: ${localeNames[locale]} (${locale.toUpperCase()})`}
         className={cn(
           "cursor-pointer items-center transition-colors",
           inline
@@ -131,7 +132,7 @@ export function LanguageSwitcher({
 
       <AnimatePresence initial={false}>
         {open && (
-          <motion.ul
+          <m.ul
             ref={listRef}
             id={panelId}
             role="list"
@@ -167,7 +168,7 @@ export function LanguageSwitcher({
                 </li>
               );
             })}
-          </motion.ul>
+          </m.ul>
         )}
       </AnimatePresence>
     </div>

@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "predev": "node scripts/copy-maplibre-worker.mjs",
-    "prebuild": "node scripts/copy-maplibre-worker.mjs"
+    "prebuild": "node scripts/copy-maplibre-worker.mjs",
+    "test": "vitest run"
   },
   "license": "UNLICENSED",
   "dependencies": {
@@ -39,6 +40,7 @@
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.3",
+    "vitest": "^3.2.7",
     "wrangler": "^4.131.2"
   }
 }

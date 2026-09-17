@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Menu, Phone, X } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -15,11 +15,15 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pendingHash = useRef<string | null>(null);
-  const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 24);
-  });
+  // Solid background once the page is scrolled. A plain passive listener keeps framer's
+  // scroll tracking out of the initial bundle.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   function closeMenu() {
     document.body.style.overflow = "";
@@ -125,7 +129,7 @@ export function Navbar() {
 
       <AnimatePresence onExitComplete={scrollToPendingSection}>
         {open && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
@@ -156,7 +160,7 @@ export function Navbar() {
                 {business.phone}
               </a>
             </Container>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

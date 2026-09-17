@@ -36,6 +36,9 @@
   --color-shade: #c89448;
   --color-shade-bright: #d6a85e;
   --color-mist: #d8ded6;
+  /* Gold for text on the light backgrounds: 4.9:1 on porcelain-2, 5.3:1 on porcelain
+     (the brand gold --color-shade is 2.3:1, fine for icons and on dark, not for text). */
+  --color-shade-ink: #855e22;
 
   --font-sans: "Dredent Sans Cyrillic", var(--font-work-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Dredent Display Cyrillic", var(--font-fraunces), ui-serif, Georgia, serif;
@@ -102,5 +105,70 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Hero entrance (components/hero.tsx). CSS so the heading paints before hydration. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rise-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-rise {
+  animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.animate-rise-scale {
+  animation: rise-scale 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise,
+  .animate-rise-scale {
+    animation: none;
+  }
+}
+
+/* Print: keep the content and the contact details, drop navigation, animations, the 3D
+   hero scene and the interactive map; show link targets for external links. */
+@media print {
+  header,
+  nav,
+  footer nav,
+  canvas,
+  .maplibregl-map,
+  button,
+  [aria-label][role="img"] {
+    display: none !important;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  section {
+    break-inside: avoid;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
   }
 }

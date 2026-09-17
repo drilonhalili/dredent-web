@@ -4,6 +4,7 @@ import { fontClassName } from "@/app/fonts";
 import { Analytics } from "@/components/analytics";
 import { CookieBanner } from "@/components/cookie-banner";
 import { I18nProvider } from "@/components/i18n-provider";
+import { MotionProvider } from "@/components/motion-provider";
 import { ScrollBehavior } from "@/components/scroll-behavior";
 import { getDictionary } from "@/data/locales";
 import { business, curatorFeedActive, seo } from "@/data/site-config";
@@ -55,6 +56,13 @@ export async function generateMetadata({ params }: Omit<Props, "children">): Pro
       description: t.seo.description,
       images: [image],
     },
+    // Geo meta tags for local search; same coordinates as the JSON-LD and the map pin.
+    other: {
+      "geo.region": "MK",
+      "geo.placename": "Tetovo",
+      "geo.position": `${business.geo.lat};${business.geo.lng}`,
+      ICBM: `${business.geo.lat}, ${business.geo.lng}`,
+    },
     robots: {
       index: true,
       follow: true,
@@ -94,9 +102,11 @@ export default async function LocaleLayout({ children, params }: Props) {
           {t.a11y.skipToContent}
         </a>
         <I18nProvider locale={locale} dictionary={t}>
-          {children}
-          {/* The only third-party embed is the Instagram feed, so the banner exists only when it is enabled. */}
-          {curatorFeedActive && <CookieBanner />}
+          <MotionProvider>
+            {children}
+            {/* The only third-party embed is the Instagram feed, so the banner exists only when it is enabled. */}
+            {curatorFeedActive && <CookieBanner />}
+          </MotionProvider>
         </I18nProvider>
         <ScrollBehavior />
         <Analytics />

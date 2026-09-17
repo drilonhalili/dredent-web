@@ -5,7 +5,7 @@ export const sq: Dictionary = {
   seo: {
     title: "Dredent Dental Clinic — Dentist në Tetovë, Maqedonia e Veriut",
     description:
-      "Stomatologji e përgjithshme dhe estetike në Tetovë, Maqedonia e Veriut. Dredent Dental Clinic — kujdes i shkëlqyer dhe vëmendje personale në Rr. Strasho Pindjur 121. Rezervoni një konsultë.",
+      "Stomatologji e përgjithshme dhe estetike në Tetovë. Kujdes i shkëlqyer dhe vëmendje personale në Rr. Strasho Pindjur 121. Rezervoni një konsultë.",
     keywords: [
       "dentist Tetovë",
       "stomatolog Tetovë",

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CompareSlider } from "@/components/compare-slider";
@@ -28,7 +28,7 @@ export function SmileGallery() {
           {comparePairs.map((pair, i) => {
             const copy = t.gallery.cases[pair.id];
             return (
-              <motion.div
+              <m.figure
                 key={pair.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -43,13 +43,13 @@ export function SmileGallery() {
                   beforeAlt={fill(t.a11y.beforeAlt, { title: copy.title })}
                   afterAlt={fill(t.a11y.afterAlt, { title: copy.title })}
                 />
-                <div className="mt-4 flex items-baseline justify-between gap-4">
+                <figcaption className="mt-4">
                   <h3 className="font-display text-lg font-semibold text-porcelain">{copy.title}</h3>
-                </div>
-                <p className="mt-1 font-mono text-xs uppercase tracking-wide text-mist/70">
-                  {copy.procedure}
-                </p>
-              </motion.div>
+                  <p className="mt-1 font-mono text-xs uppercase tracking-wide text-mist/70">
+                    {copy.procedure}
+                  </p>
+                </figcaption>
+              </m.figure>
             );
           })}
         </div>

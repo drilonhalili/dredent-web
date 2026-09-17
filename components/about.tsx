@@ -1,8 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { useI18n } from "@/components/i18n-provider";
+
+// The image column is the container width (minus its padding) until `lg`, then ~46% of it
+// (at most ~470 px inside the 1152 px container).
+const IMAGE_SIZES = "(min-width: 1024px) 500px, (min-width: 640px) calc(100vw - 4rem), calc(100vw - 2.5rem)";
 
 export function About() {
   const { t } = useI18n();
@@ -10,7 +14,7 @@ export function About() {
   return (
     <section id="about" className="py-20 sm:py-28">
       <Container className="grid items-center gap-12 lg:grid-cols-[0.85fr_1fr] lg:gap-16">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -24 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -18,24 +22,27 @@ export function About() {
           className="relative"
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-porcelain-2">
-            {/* Pre-cropped to the container's 4:5 and encoded from
-                assets-src/teeths-original.jpeg (WebP + JPEG fallback), so no
-                wasted bytes — the WebP is ~52 KB vs the 2.4 MB original. */}
+            {/* Pre-cropped to the container's 4:5 from assets-src/teeths-original.jpeg;
+                studio.webp (960×1200) is the master, scripts/build-about-image.mjs derives
+                the AVIF and 720 px variants — phones get ~25 KB instead of the 2.4 MB original. */}
             <picture>
-              <source srcSet="/about/studio.webp" type="image/webp" />
+              <source type="image/avif" srcSet="/about/studio-720.avif 720w, /about/studio.avif 960w" sizes={IMAGE_SIZES} />
               <img
                 src="/about/studio.webp"
+                srcSet="/about/studio-720.webp 720w, /about/studio.webp 960w"
+                sizes={IMAGE_SIZES}
                 alt={t.about.imageAlt}
                 width={960}
                 height={1200}
                 loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover"
               />
             </picture>
           </div>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -68,7 +75,7 @@ export function About() {
               </span>
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </Container>
     </section>
   );

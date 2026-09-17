@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -14,6 +14,8 @@ import {
   instagramPosts,
   instagramPostUrl,
   instagramTileSrc,
+  instagramTileSrcSet,
+  instagramTileSrcSetAvif,
 } from "@/data/site-config";
 import { useConsentState } from "@/lib/consent";
 import { fill } from "@/lib/i18n";
@@ -62,7 +64,7 @@ function StaticMosaic() {
         const caption = t.instagram.captions[post.id];
         const big = "big" in post && post.big;
         return (
-          <motion.a
+          <m.a
             key={post.id}
             href={instagramPostUrl(post)}
             target="_blank"
@@ -75,9 +77,17 @@ function StaticMosaic() {
               big ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
             }`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <picture>
+              <source
+                type="image/avif"
+                srcSet={instagramTileSrcSetAvif(post)}
+                sizes={big ? "(min-width: 640px) 50vw, 100vw" : "(min-width: 640px) 25vw, 50vw"}
+              />
+              { }
+              <img
               src={instagramTileSrc(post)}
+              srcSet={instagramTileSrcSet(post)}
+              sizes={big ? "(min-width: 640px) 50vw, 100vw" : "(min-width: 640px) 25vw, 50vw"}
               alt={caption}
               width={900}
               height={600}
@@ -85,10 +95,15 @@ function StaticMosaic() {
               decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
             />
-            <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-ink/0 p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+            </picture>
+            {/* Repeats the alt text visually on hover, so it is hidden from assistive tech. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-ink/80 via-ink/0 to-ink/0 p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+            >
               <p className="line-clamp-2 text-xs font-medium text-porcelain">{caption}</p>
             </div>
-          </motion.a>
+          </m.a>
         );
       })}
     </div>

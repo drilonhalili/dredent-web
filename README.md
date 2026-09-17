@@ -93,6 +93,13 @@ under `app/fonts/` (SIL Open Font License — see `app/fonts/OFL-LICENSE.txt`) r
 loaded from Google's font CDN, so the site has zero runtime dependency on a third-party
 font host.
 
+Motion is deliberately cheap: the hero entrance is plain CSS (`animate-rise` in
+`globals.css`, off under `prefers-reduced-motion`), and the scroll-reveal/menu/FAQ animations
+use framer-motion through `LazyMotion` (`components/motion-provider.tsx`) with the slim `m.*`
+elements — the animation engine is a separate ~14 KB chunk fetched after the first paint.
+`strict` mode is on, so a `motion.div` slipped into a component throws in development: always
+import `m` from `framer-motion`, never `motion`.
+
 Services aren't numbered 01/02/03 — there's no real sequence to them, so numbering would
 just be decoration pretending to be information.
 
@@ -233,6 +240,26 @@ only exists while `curatorFeed.enabled` is true and `NEXT_PUBLIC_CURATOR_FEED_ID
 If you later want a hosted CMP (OneTrust CookiePro, Cookiebot…), replace the banner and
 have `lib/consent.ts` read that vendor's consent state instead; the gating stays the same.
 
+## Tests and local checks
+
+- `npm test` runs the Vitest suite in `tests/`: dictionary parity across the three languages
+  (same keys, a caption/service/case/nav label for every configured id, FAQ and legal section
+  counts, title/description length limits), the i18n helpers, and config invariants (every
+  referenced image and its srcset/AVIF variant exists under `public/`, the clinic pin lies inside
+  the map bounds, URLs are absolute). No DOM tests: the components are checked in the browser.
+- Headers (`public/_headers`), including the Content-Security-Policy, only apply on Cloudflare.
+  To test them locally, serve `out/` with a server that applies `_headers` — the one used during
+  development lives in the Claude scratchpad; any static server that reads Netlify/Cloudflare
+  `_headers` files works — then load the site and watch the console for CSP violations. The
+  policy was verified that way against the map worker, the Three.js hero and the images.
+- Lighthouse: `npx lighthouse http://localhost:4173/sq/ --form-factor=mobile --chrome-flags=--headless=new`
+  against a local build, served with brotli/gzip on — Lighthouse's throttling simulation counts
+  transfer bytes, so an uncompressed local server roughly doubles the reported LCP compared with
+  Cloudflare. Last run (17 Sep 2026): Performance 86–88 (LCP 3.8 s simulated, 0.2 s observed;
+  the remaining gap is the ~360 KB of fonts + JavaScript fetched before the first paint),
+  Accessibility 100, Best Practices 100, SEO 100. `node scripts/build-about-image.mjs`
+  regenerates the About photo's AVIF/720 px variants if the master changes.
+
 ## Deployment (Cloudflare Workers, static assets)
 
 The domain is registered at Cloudflare, so the site is hosted there too: a **Worker with
@@ -249,7 +276,10 @@ no server code, just the `out/` directory as assets, trailing-slash HTML handlin
    `www.dredent.com`. Cloudflare creates the DNS records itself because the zone is in the
    same account. Leave the `workers.dev` subdomain disabled so the site has one canonical host.
 3. `public/_redirects` (copied into `out/`) sends `/` to `/sq/` with a real 301, and
-   `public/_headers` adds the security headers and long cache lifetimes for hashed assets. Both
+   `public/_headers` adds the security headers — including the enforcing Content-Security-Policy
+   (`'self'` everywhere, `'unsafe-inline'` only for Next's inline scripts and framer-motion's
+   inline styles, the Cloudflare analytics hosts, `blob:` workers for MapLibre) — and long cache
+   lifetimes for hashed assets. Enabling the Curator feed later means adding its hosts to the CSP. Both
    are Cloudflare conventions (Pages and Workers assets); other hosts need their own equivalent.
    `www` → apex is a zone-level **Redirect Rule** (dashboard → dredent.com → Rules → template
    "Redirect from WWW to Root"), because the Workers `_redirects` file only accepts relative
@@ -272,10 +302,8 @@ Cloudflare gives, add a proxied placeholder record (`A @ 192.0.2.1`), and create
 Rule: all requests → `https://dredent.com/${path}` (301, preserve query). The .mk then
 resolves with HTTPS and lands on the same page of the .com.
 
-A Content-Security-Policy is deliberately not set yet: the map worker, the Three.js hero
-and the analytics beacon each need an allowance, so add it to `public/_headers` only after
-testing on a preview URL. A starting point:
-`default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'`.
+The Content-Security-Policy lives in `public/_headers` and is enforced (see step 3 above).
+
 
 ## A few deliberate follow-ups, not done here
 
@@ -287,11 +315,14 @@ testing on a preview URL. A starting point:
   Still open there: reviews, photos, posts, Q&A (see `docs/google-business-profile.md`).
   Add a real `twitter.site` handle if the clinic ever has one.
 - **Fonts (done 17 Sep 2026)**: `scripts/build-fonts.sh` turns the TTF originals in
-  `assets-src/fonts/` into the WOFF2 subsets in `app/fonts/` — Latin + Latin Extended for all
-  faces, Cyrillic only in Plex Mono, weights 400–600, Fraunces' SOFT/WONK axes pinned to their
-  defaults — 352 KB per page instead of 1 MB. Re-run it after changing a font or adding a
-  language (it creates a Python venv in `.venv-fonts/` on first run). `mk` pages still fall
-  back to system fonts for Cyrillic display text, see "Languages" above.
+  `assets-src/fonts/` into the WOFF2 subsets in `app/fonts/` — Latin-1 plus the region's
+  Latin Extended letters (Ć Č Đ Š Ž, Turkish Ğ İ ı Ş) for all faces, Cyrillic only in Plex
+  Mono, weights 400–600 (Plex Mono: Regular and Medium only), Fraunces' SOFT/WONK axes pinned
+  to their defaults — 220 KB for the five faces instead of 1 MB. All five are preloaded
+  because every one is on the first screen. Re-run the script after changing a font or adding
+  a language (it creates a Python venv in `.venv-fonts/` on first run); widen `LATIN` in it
+  first if new copy needs letters outside that set. `mk` pages still fall back to system
+  fonts for Cyrillic display text, see "Languages" above.
 - **Real photography**: the Transformations section is wired for five real before/after
   cases (`comparePairs` in `data/site-config.ts`). Run `bash scripts/fetch-results.sh`
   once to download the photos into `public/results/` (the source links expire —

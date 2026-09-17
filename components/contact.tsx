@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Clock, ExternalLink, Mail, MapPin, Navigation, Phone } from "lucide-react";
 import { MapEmbed } from "@/components/map-embed";
 import { Container } from "@/components/ui/container";
@@ -14,7 +14,7 @@ export function Contact() {
   return (
     <section id="contact" className="py-20 sm:py-28">
       <Container className="grid gap-12 lg:grid-cols-[0.8fr_1fr] lg:gap-16">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -57,9 +57,9 @@ export function Contact() {
               </div>
             </li>
           </ul>
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -87,7 +87,7 @@ export function Contact() {
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           </div>
-        </motion.div>
+        </m.div>
       </Container>
     </section>
   );

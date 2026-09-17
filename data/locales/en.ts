@@ -5,7 +5,7 @@ export const en: Dictionary = {
   seo: {
     title: "Dredent Dental Clinic — Dentist in Tetovo, North Macedonia",
     description:
-      "General and cosmetic dentistry in Tetovo, North Macedonia. Dredent Dental Clinic — excellent care and personal attention at Strasho Pindjur 121. Book a consultation.",
+      "General and cosmetic dentistry in Tetovo, North Macedonia. Excellent care and personal attention at Strasho Pindjur 121. Book a consultation.",
     keywords: [
       "dentist Tetovo",
       "dental clinic Tetovo",

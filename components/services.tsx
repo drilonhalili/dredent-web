@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Anchor, Gem, Layers, Scan, Sparkles, Stethoscope, type LucideIcon } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -33,7 +33,7 @@ export function Services() {
             const Icon = icons[service.icon];
             const copy = t.services.items[service.id];
             return (
-              <motion.div
+              <m.div
                 key={service.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -46,7 +46,7 @@ export function Services() {
                 </div>
                 <h3 className="mt-5 font-display text-xl font-semibold text-ink">{copy.title}</h3>
                 <p className="mt-2.5 text-[0.95rem] leading-relaxed text-ink-soft">{copy.description}</p>
-              </motion.div>
+              </m.div>
             );
           })}
         </div>

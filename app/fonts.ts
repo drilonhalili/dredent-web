@@ -25,11 +25,13 @@ export const workSans = localFont({
   display: "swap",
 });
 
+// Every face is used on the first screen (nav labels, hero eyebrow and title), so all of
+// them are preloaded; keep the set small — each file is fetched before the first paint.
 export const plexMono = localFont({
   src: [
+    // Regular for eyebrows and labels, Medium for the nav links; no semibold cut.
     { path: "./fonts/IBMPlexMono-Regular.woff2", weight: "400", style: "normal" },
     { path: "./fonts/IBMPlexMono-Medium.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/IBMPlexMono-SemiBold.woff2", weight: "600", style: "normal" },
   ],
   variable: "--font-plex-mono",
   display: "swap",

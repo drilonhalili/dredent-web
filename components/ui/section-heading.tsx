@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export function SectionHeading({
@@ -27,7 +27,7 @@ export function SectionHeading({
         className,
       )}
     >
-      <motion.p
+      <m.p
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -38,8 +38,8 @@ export function SectionHeading({
         )}
       >
         {eyebrow}
-      </motion.p>
-      <motion.h2
+      </m.p>
+      <m.h2
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
@@ -50,9 +50,9 @@ export function SectionHeading({
         )}
       >
         {title}
-      </motion.h2>
+      </m.h2>
       {subtitle && (
-        <motion.p
+        <m.p
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -63,7 +63,7 @@ export function SectionHeading({
           )}
         >
           {subtitle}
-        </motion.p>
+        </m.p>
       )}
     </div>
   );

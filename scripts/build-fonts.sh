@@ -13,7 +13,12 @@ if [ ! -x "$VENV/bin/pyftsubset" ]; then
   python3 -m venv "$VENV"
   "$VENV/bin/pip" install --quiet --disable-pip-version-check fonttools brotli
 fi
-LATIN="U+0000-00FF,U+0100-024F,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1E00-1EFF,U+2000-206F,U+20A0-20CF,U+2122,U+2190-2199,U+2212,U+2215,U+FEFF,U+FFFD"
+# Latin-1 (Albanian ë/ç, English, German, French, Italian, ...) plus only the Latin
+# Extended-A letters used by the region's names — Ć Č Đ Š Ž and Turkish Ğ İ ı Ş — instead of
+# the whole block, general punctuation, euro, trademark, arrows, minus. The dictionaries in
+# data/locales use nothing beyond this (checked 2026-09); an unexpected letter falls back to
+# the system font for that glyph only.
+LATIN="U+0000-00FF,U+0106-0107,U+010C-010D,U+0110-0111,U+011E-011F,U+0130-0131,U+015E-015F,U+0160-0161,U+017D-017E,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199,U+2212,U+FEFF,U+FFFD"
 CYRILLIC="U+0400-04FF,U+2116"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 subset() { # name unicodes [instancer axis limits...]
@@ -32,5 +37,5 @@ subset() { # name unicodes [instancer axis limits...]
 subset Fraunces-Variable        "$LATIN" wght=400:600 SOFT=0 WONK=1
 subset Fraunces-Italic-Variable "$LATIN" wght=400:600 SOFT=0 WONK=1
 subset WorkSans-Variable        "$LATIN" wght=400:600
-for f in IBMPlexMono-Regular IBMPlexMono-Medium IBMPlexMono-SemiBold; do subset "$f" "$LATIN,$CYRILLIC"; done
+for f in IBMPlexMono-Regular IBMPlexMono-Medium; do subset "$f" "$LATIN,$CYRILLIC"; done
 rm -f app/fonts/WorkSans-Italic-Variable.woff2

@@ -1,5 +1,5 @@
 // Turns the clinic's Instagram originals in assets-src/instagram/<shortcode>.jpg into
-// 900x600 WebP tiles in public/instagram/ for the mosaic in components/instagram-mosaic.tsx
+// 900x600 WebP + AVIF tiles (plus 450x300 "-450" variants for srcset) in public/instagram/ for the mosaic in components/instagram-mosaic.tsx
 // (`instagramPosts` in data/site-config.ts lists which ones are shown). By default the
 // crop uses sharp's "attention" strategy (skin tones and detail); for portraits where
 // that lands on the eyes and cuts off the smile, FOCUS pins the crop's vertical centre.
@@ -18,6 +18,8 @@ const SRC = path.join(REPO, "assets-src/instagram");
 const OUT = path.join(REPO, "public/instagram");
 const WIDTH = 900;
 const HEIGHT = 600;
+// Half-size variant for the srcset (small tiles and phones).
+const SMALL = 450;
 const ASPECT = WIDTH / HEIGHT;
 
 // Manual crops keyed by shortcode: `y` is the vertical centre of the crop as a fraction
@@ -52,6 +54,9 @@ for (const file of files) {
   } else {
     image = image.resize(WIDTH, HEIGHT, { fit: "cover", position: sharp.strategy.attention });
   }
-  const info = await image.webp({ quality: 80 }).toFile(path.join(OUT, `${code}.webp`));
+  const info = await image.clone().webp({ quality: 80 }).toFile(path.join(OUT, `${code}.webp`));
+  await image.clone().resize(SMALL, SMALL / (WIDTH / HEIGHT)).webp({ quality: 78 }).toFile(path.join(OUT, `${code}-450.webp`));
+  await image.clone().avif({ quality: 55 }).toFile(path.join(OUT, `${code}.avif`));
+  await image.clone().resize(SMALL, SMALL / (WIDTH / HEIGHT)).avif({ quality: 52 }).toFile(path.join(OUT, `${code}-450.avif`));
   console.log(`${code}.webp ${info.width}x${info.height} ${(info.size / 1024).toFixed(0)} KB${focus ? ` (focus ${JSON.stringify(focus)})` : ""}`);
 }

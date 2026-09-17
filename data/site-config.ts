@@ -155,6 +155,16 @@ export type InstagramPost = (typeof instagramPosts)[number];
 export const instagramPostUrl = (post: InstagramPost) =>
   `https://www.instagram.com/${"reel" in post && post.reel ? "reel" : "p"}/${post.shortcode}/`;
 export const instagramTileSrc = (post: InstagramPost) => `/instagram/${post.shortcode}.webp`;
+// 900px tile plus the 450px variant the build script writes next to it.
+export const instagramTileSrcSet = (post: InstagramPost) =>
+  `/instagram/${post.shortcode}-450.webp 450w, /instagram/${post.shortcode}.webp 900w`;
+
+// Before/after photos are 1200x800 with a 600x400 "-600" variant (scripts/align-results.mjs).
+export const resultSrcSet = (src: string) => `${src.replace(/(\.\w+)$/, "-600$1")} 600w, ${src} 1200w`;
+// Every generated WebP has an AVIF twin with the same name (scripts/align-results.mjs,
+// scripts/build-instagram-tiles.mjs); <picture> offers it first.
+export const avifSrc = (src: string) => src.replace(/\.webp$/, ".avif");
+export const instagramTileSrcSetAvif = (post: InstagramPost) => avifSrc(instagramTileSrcSet(post).replace(/\.webp /g, ".avif "));
 
 
 export const seo = {
