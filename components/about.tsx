@@ -24,7 +24,7 @@ export function About() {
             <picture>
               <source srcSet="/about/studio.webp" type="image/webp" />
               <img
-                src="/about/studio.jpg"
+                src="/about/studio.webp"
                 alt={t.about.imageAlt}
                 width={960}
                 height={1200}
