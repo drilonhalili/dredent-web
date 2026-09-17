@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
@@ -28,11 +28,15 @@ import { fill } from "@/lib/i18n";
  *     images in public/instagram/ — each tile linking to the post on Instagram.
  *     Nothing is requested from a third party, so no consent is involved.
  *   - on, with NEXT_PUBLIC_CURATOR_FEED_ID set: the live Curator.io feed, loaded only
- *     once the visitor has consented, because it pulls Curator/Instagram scripts.
+ *     once the visitor has consented, because it pulls Curator/Instagram scripts. Its hosts
+ *     must be allowed in the Content-Security-Policy (public/_headers) — tests/csp.test.ts
+ *     fails while the flag is on without them — and if the loader script still cannot load
+ *     (blocked, offline) the static mosaic is shown instead of an empty container.
  */
 export function InstagramMosaic() {
   const { t } = useI18n();
   const { consent } = useConsentState();
+  const [embedFailed, setEmbedFailed] = useState(false);
 
   return (
     <section className="py-20 sm:py-28">
@@ -49,7 +53,11 @@ export function InstagramMosaic() {
           </ButtonLink>
         </div>
 
-        {curatorFeedActive && consent?.media ? <CuratorMosaic /> : <StaticMosaic />}
+        {curatorFeedActive && consent?.media && !embedFailed ? (
+          <CuratorMosaic onError={() => setEmbedFailed(true)} />
+        ) : (
+          <StaticMosaic />
+        )}
       </Container>
     </section>
   );
@@ -112,17 +120,25 @@ function StaticMosaic() {
 
 // Live Curator.io embed. The loader script populates the container div; the
 // "Powered by Curator.io" link is required on Curator's free plan.
-function CuratorMosaic() {
+function CuratorMosaic({ onError }: { onError: () => void }) {
   useEffect(() => {
     const script = document.createElement("script");
     script.async = true;
     script.charset = "UTF-8";
     script.src = `https://cdn.curator.io/published/${curatorFeed.feedId}.js`;
+    script.onerror = () => {
+      // A Content-Security-Policy block also ends up here (the browser logs the
+      // directive separately); the parent falls back to the static tiles.
+      console.error(
+        "Curator feed: the loader script did not load. If the console shows a Content-Security-Policy error, allow Curator's hosts in public/_headers (README, \"The Instagram section\").",
+      );
+      onError();
+    };
     document.body.appendChild(script);
     return () => {
       script.remove();
     };
-  }, []);
+  }, [onError]);
 
   return (
     <div id={curatorFeed.containerId} className="mt-10">

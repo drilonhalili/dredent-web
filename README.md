@@ -161,6 +161,11 @@ clinic's Instagram account, which is why it is parked. To go live:
    `enabled: true` on `curatorFeed` in `data/site-config.ts`, and rebuild. The cookie banner
    and the footer's cookie-settings button appear automatically, since the feed loads
    Curator/Instagram scripts.
+4. Allow Curator's hosts in the Content-Security-Policy in `public/_headers` — at least
+   `https://cdn.curator.io` in `script-src`; then load the feed once with the browser console
+   open and add the API and image hosts it reports (`connect-src`, `img-src`, `style-src`).
+   `npm test` fails while the flag is on and the CDN is missing from `script-src`, and if the
+   loader script is blocked anyway the section falls back to the static tiles and logs why.
 
 Alternative if you outgrow the hosted widget: fetch posts server-side with the
 Instagram Graph API at build time (never expose a long-lived token client-side)
