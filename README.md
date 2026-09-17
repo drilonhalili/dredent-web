@@ -260,9 +260,10 @@ have `lib/consent.ts` read that vendor's consent state instead; the gating stays
 - Lighthouse: `npx lighthouse http://localhost:4173/sq/ --form-factor=mobile --chrome-flags=--headless=new`
   against a local build, served with brotli/gzip on — Lighthouse's throttling simulation counts
   transfer bytes, so an uncompressed local server roughly doubles the reported LCP compared with
-  Cloudflare. Last run (17 Sep 2026): Performance 86–88 (LCP 3.8 s simulated, 0.2 s observed;
-  the remaining gap is the ~360 KB of fonts + JavaScript fetched before the first paint),
-  Accessibility 100, Best Practices 100, SEO 100. `node scripts/build-about-image.mjs`
+  Cloudflare. Last run (17 Sep 2026): Performance 89–91 on the local build and 76–81 against
+  dredent.com (real latency plus the analytics beacon); LCP 3.3–4.0 s simulated versus
+  0.2–0.5 s observed — the gap is the ~400 KB of fonts and JavaScript fetched before the first
+  paint. Accessibility 100, Best Practices 100, SEO 100 in both. `node scripts/build-about-image.mjs`
   regenerates the About photo's AVIF/720 px variants if the master changes.
 
 ## Deployment (Cloudflare Workers, static assets)
