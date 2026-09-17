@@ -260,7 +260,11 @@ no server code, just the `out/` directory as assets, trailing-slash HTML handlin
 
 DNS hygiene for a domain that sends no email (the clinic uses Gmail): in the zone add
 `MX @ 0 .` (null MX), `TXT @ "v=spf1 -all"` and `TXT _dmarc "v=DMARC1; p=reject;"`, so
-nobody can spoof `.com`. Under SSL/TLS enable "Always Use HTTPS".
+nobody can spoof `@dredent.com`. Under SSL/TLS → Edge Certificates: "Always Use HTTPS" on, HSTS on
+(max-age 6 months, includeSubDomains, no preload — the header is
+`strict-transport-security: max-age=15552000; includeSubDomains`), minimum TLS version 1.2.
+These are zone settings, not code: they survive redeploys but must be redone if the zone is
+ever recreated.
 
 **dredent.mk** (once bought at a MARnet registrar such as Unet or MKhost): add it to
 Cloudflare as a second free zone, switch its nameservers at the registrar to the two
