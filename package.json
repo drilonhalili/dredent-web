@@ -19,9 +19,9 @@
     "@react-three/fiber": "^9.6.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.42.2",
-    "lucide-react": "^1.24.0",
+    "lucide-react": "^1.70.0",
     "maplibre-gl": "^6.9.0",
-    "next": "^15.5.20",
+    "next": "^15.5.29",
     "pmtiles": "^4.5.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -30,17 +30,17 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.6",
-    "@tailwindcss/postcss": "^4.3.2",
+    "@tailwindcss/postcss": "^4.3.4",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.187.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^15.5.20",
+    "eslint-config-next": "^15.5.29",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "typescript": "^5.9.3",
-    "vitest": "^5.0.5",
-    "wrangler": "^4.131.2"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.158.0"
   }
 }
